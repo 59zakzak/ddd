@@ -1,0 +1,63 @@
+rules_version = '2';
+// DDD Diary - Firestore 보안 규칙
+// Firebase 콘솔 > Firestore Database > 규칙 탭에 이 내용을 통째로 붙여 넣고 [게시]를 누르세요.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function me() { return request.auth.uid; }
+    function rolesDoc() { return /databases/$(database)/documents/admin/roles; }
+    function cfgDoc() { return /databases/$(database)/documents/admin/config; }
+    // 최고 관리자: admin/roles 문서의 owner 필드에 적힌 uid
+    function isOwner() { return signedIn() && exists(rolesDoc()) && get(rolesDoc()).data.owner == me(); }
+    // 중간 관리자: admin/config 문서의 managerIds 목록에 들어 있는 uid
+    function isManager() {
+      return signedIn() && exists(cfgDoc()) && ('managerIds' in get(cfgDoc()).data) && (me() in get(cfgDoc()).data.managerIds);
+    }
+    function isStaff() { return isOwner() || isManager(); }
+
+    // 1) 각자의 다이어리 기록, 사진: 본인만 읽고 쓸 수 있어요. 관리자도 볼 수 없어요.
+    match /data/users/{userId}/{rest=**} {
+      allow read, write: if signedIn() && me() == userId;
+    }
+
+    // 2) 회원 정보
+    match /members/{userId} {
+      allow read: if signedIn() && (me() == userId || isStaff());
+      // 새 회원은 반드시 '승인 필요' 상태로만 가입할 수 있어요 (최고 관리자는 예외).
+      allow create: if signedIn() && ((me() == userId && request.resource.data.needsApproval == true) || isOwner());
+      // 본인은 자기 정보를 고칠 수 있지만 '승인 필요' 표시는 지울 수 없어요.
+      allow update: if signedIn() && (isOwner() ||
+        (me() == userId && request.resource.data.get('needsApproval', false) == resource.data.get('needsApproval', false)));
+      allow delete: if signedIn() && (me() == userId || isOwner());
+    }
+
+    // 3) 관리자 설정 (공지, 초대 코드, 중간 관리자 목록 등)
+    match /admin/roles {
+      allow read: if signedIn();
+      allow write: if false; // 콘솔에서만 직접 만들어요.
+    }
+    match /admin/config {
+      allow read: if signedIn();
+      allow write: if isOwner();
+    }
+
+    // 4) 담당 선생님께 보내는 기록 요약 (학생이 동의한 경우만 학생이 직접 써요)
+    match /reports/{userId} {
+      allow read: if signedIn() && (me() == userId || isStaff());
+      allow write: if signedIn() && me() == userId;
+    }
+
+    // 5) 선생님 한마디
+    match /feedback/{userId}/notes/{week} {
+      allow read: if signedIn() && (me() == userId || isStaff());
+      allow write: if isStaff();
+    }
+
+    // 6) 가입 승인
+    match /approvals/{userId} {
+      allow read: if signedIn();
+      allow write: if isStaff();
+    }
+  }
+}
