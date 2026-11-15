@@ -26,3 +26,9 @@ window.DDD_API = {
   kakaoRestKey: "",      // 책(선택): 카카오 REST API 키. 넣으면 카카오 책 검색을 먼저 써요
   googleMapsKey: ""      // 여행 지도(선택): Google Maps JavaScript API 키. 비워 두면 OpenStreetMap 지도를 써요
 };
+
+// Google 드라이브 · 포토 연결 (README의 "Google 드라이브·포토 연결" 순서대로 만든 OAuth 클라이언트 ID를 넣으세요)
+window.DDD_GOOGLE = {
+  clientId: "604060347360-r017ucsj9h7rlruatgdohpc1ebv9nc7v.apps.googleusercontent.com",          // 예: "1234567890-abcdefg.apps.googleusercontent.com"
+  photos: true           // Google 포토 앨범(DDD Diary)에도 함께 올리기. 끄려면 false
+};
