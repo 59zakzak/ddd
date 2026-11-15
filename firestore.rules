@@ -1,11 +1,13 @@
 rules_version = '2';
-// DDD Diary - Firestore 보안 규칙
+// DDD Diary - Firestore 보안 규칙 (v2: 소셜 로그인, 체험 계정, 관심사)
 // Firebase 콘솔 > Firestore Database > 규칙 탭에 이 내용을 통째로 붙여 넣고 [게시]를 누르세요.
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function signedIn() { return request.auth != null; }
     function me() { return request.auth.uid; }
+    // 체험(익명) 계정인지
+    function isAnon() { return signedIn() && request.auth.token.firebase.sign_in_provider == 'anonymous'; }
     function rolesDoc() { return /databases/$(database)/documents/admin/roles; }
     function cfgDoc() { return /databases/$(database)/documents/admin/config; }
     // 최고 관리자: admin/roles 문서의 owner 필드에 적힌 uid
@@ -15,19 +17,20 @@ service cloud.firestore {
       return signedIn() && exists(cfgDoc()) && ('managerIds' in get(cfgDoc()).data) && (me() in get(cfgDoc()).data.managerIds);
     }
     function isStaff() { return isOwner() || isManager(); }
+    function isDemoUser(userId) { return exists(/databases/$(database)/documents/demo/$(userId)); }
 
-    // 1) 각자의 다이어리 기록, 사진: 본인만 읽고 쓸 수 있어요. 관리자도 볼 수 없어요.
+    // 1) 각자의 다이어리 기록, 사진, 관심사: 본인만 읽고 쓸 수 있어요.
+    //    체험 계정의 기록만은 최고 관리자가 읽고 지울 수 있어요 (체험 기록 정리용).
     match /data/users/{userId}/{rest=**} {
       allow read, write: if signedIn() && me() == userId;
+      allow read, delete: if isOwner() && isDemoUser(userId);
     }
 
-    // 2) 회원 정보
+    // 2) 회원 정보 (체험 계정은 회원이 될 수 없어요)
     match /members/{userId} {
       allow read: if signedIn() && (me() == userId || isStaff());
-      // 새 회원은 반드시 '승인 필요' 상태로만 가입할 수 있어요 (최고 관리자는 예외).
-      allow create: if signedIn() && ((me() == userId && request.resource.data.needsApproval == true) || isOwner());
-      // 본인은 자기 정보를 고칠 수 있지만 '승인 필요' 표시는 지울 수 없어요.
-      allow update: if signedIn() && (isOwner() ||
+      allow create: if signedIn() && !isAnon() && ((me() == userId && request.resource.data.needsApproval == true) || isOwner());
+      allow update: if signedIn() && !isAnon() && (isOwner() ||
         (me() == userId && request.resource.data.get('needsApproval', false) == resource.data.get('needsApproval', false)));
       allow delete: if signedIn() && (me() == userId || isOwner());
     }
@@ -42,10 +45,10 @@ service cloud.firestore {
       allow write: if isOwner();
     }
 
-    // 4) 담당 선생님께 보내는 기록 요약 (학생이 동의한 경우만 학생이 직접 써요)
+    // 4) 담당 선생님께 보내는 기록 요약
     match /reports/{userId} {
       allow read: if signedIn() && (me() == userId || isStaff());
-      allow write: if signedIn() && me() == userId;
+      allow write: if signedIn() && !isAnon() && me() == userId;
     }
 
     // 5) 선생님 한마디
@@ -58,6 +61,13 @@ service cloud.firestore {
     match /approvals/{userId} {
       allow read: if signedIn();
       allow write: if isStaff();
+    }
+
+    // 7) 체험 계정 목록 (관리자가 체험 기록을 찾아 지울 때 써요)
+    match /demo/{userId} {
+      allow read: if isOwner() || (signedIn() && me() == userId);
+      allow create, update: if isAnon() && me() == userId;
+      allow delete: if isOwner() || (signedIn() && me() == userId);
     }
   }
 }

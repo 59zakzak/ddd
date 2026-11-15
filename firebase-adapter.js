@@ -18,6 +18,7 @@
     var app = mods[0].initializeApp(CFG);
     var auth = A.getAuth(app);
     var db = F.getFirestore(app);
+    try{ await A.getRedirectResult(auth); }catch(e){ window.DDD_REDIRECT_ERROR = e; }
     await new Promise(function(res){ var un = A.onAuthStateChanged(auth, function(){ un(); res(); }); });
     fb = {app:app, auth:auth, db:db, A:A, F:F};
     return fb;
@@ -62,7 +63,13 @@
     id: async function(){ return fb.auth.currentUser ? fb.auth.currentUser.uid : null; },
     isOwner: async function(){ return (await roles()).owner; },
     canEdit: async function(){ var r = await roles(); return r.owner || r.manager; },
-    me: async function(){ var u = fb.auth.currentUser; if(!u) return null; return {id:u.uid, name:null, email:null, loginId:(u.email||"").split("@")[0]}; },
+    me: async function(){
+      var u = fb.auth.currentUser; if(!u) return null;
+      var pd = (u.providerData && u.providerData[0]) || null; var prov = u.isAnonymous ? "anonymous" : (pd ? pd.providerId : "password");
+      var mail = u.email || (pd && pd.email) || "";
+      var lid = u.isAnonymous ? "guest" : (prov === "password" ? mail.split("@")[0] : (mail || (pd && pd.uid) || u.uid));
+      return {id:u.uid, name:u.displayName || (pd && pd.displayName) || null, email:null, loginId:lid, provider:prov, anonymous:!!u.isAnonymous};
+    },
     profiles: async function(){ return {}; }
   };
   var downloads = {
@@ -91,6 +98,11 @@
     signIn: async function(id, pw){ await ready; return fb.A.signInWithEmailAndPassword(fb.auth, email(id), pw); },
     signUp: async function(id, pw){ await ready; return fb.A.createUserWithEmailAndPassword(fb.auth, email(id), pw); },
     signOut: async function(){ await ready; return fb.A.signOut(fb.auth); },
+    signInGoogle: async function(){ await ready; var p = new fb.A.GoogleAuthProvider(); p.setCustomParameters({prompt:"select_account"});
+      try{ return await fb.A.signInWithPopup(fb.auth, p); }catch(e){ if(/popup-blocked|operation-not-supported-in-this-environment/.test(e.code||"")) return fb.A.signInWithRedirect(fb.auth, p); throw e; } },
+    signInOidc: async function(providerId){ await ready; var p = new fb.A.OAuthProvider(providerId); p.addScope("openid");
+      try{ return await fb.A.signInWithPopup(fb.auth, p); }catch(e){ if(/popup-blocked/.test(e.code||"")) return fb.A.signInWithRedirect(fb.auth, p); throw e; } },
+    signInDemo: async function(){ await ready; return fb.A.signInAnonymously(fb.auth); },
     changePassword: async function(oldPw, newPw){ await ready; var u = fb.auth.currentUser; var cred = fb.A.EmailAuthProvider.credential(u.email, oldPw); await fb.A.reauthenticateWithCredential(u, cred); await fb.A.updatePassword(u, newPw); },
     deleteAccount: async function(){ await ready; var u = fb.auth.currentUser; if(u) await fb.A.deleteUser(u); },
     message: function(e){
@@ -101,6 +113,10 @@
       if(/too-many-requests/.test(c)) return "너무 많이 시도했어요. 잠시 뒤 다시 해 주세요.";
       if(/network/.test(c)) return "인터넷 연결을 확인해 주세요.";
       if(/requires-recent-login/.test(c)) return "보안을 위해 로그아웃 후 다시 로그인한 다음 시도해 주세요.";
+      if(/popup-closed-by-user|cancelled-popup-request/.test(c)) return "로그인 창이 닫혔어요. 다시 시도해 주세요.";
+      if(/operation-not-allowed|admin-restricted-operation/.test(c)) return "이 로그인 방식이 아직 켜져 있지 않아요. 관리자가 Firebase 콘솔에서 켜야 해요.";
+      if(/unauthorized-domain/.test(c)) return "이 주소가 Firebase의 승인된 도메인에 없어요. 관리자에게 알려 주세요.";
+      if(/account-exists-with-different-credential/.test(c)) return "같은 이메일로 다른 방식의 계정이 이미 있어요. 처음 가입한 방식으로 로그인해 주세요.";
       return "처리하지 못했어요. 잠시 뒤 다시 시도해 주세요. (" + c + ")";
     }
   };
