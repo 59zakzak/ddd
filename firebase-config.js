@@ -21,7 +21,7 @@ window.DDD_LOGIN = {
 
 // 관심사(책·영화) 정보 검색용 키 (비워 두면 해당 검색만 꺼져요)
 window.DDD_API = {
-  tmdbKey: "",           // 영화·드라마: themoviedb.org에서 무료로 받은 API 키(v3 auth)
+  tmdbKey: "a377ae92d0900f516b8f8fe2443aaa49",           // 영화·드라마: themoviedb.org에서 무료로 받은 API 키(v3 auth)
   googleBooksKey: "",    // 책: 비워 둬도 검색돼요. 사용량이 많아지면 Google Cloud에서 받은 키를 넣으세요
   kakaoRestKey: ""       // 책(선택): 카카오 REST API 키. 넣으면 카카오 책 검색을 먼저 써요
 };
