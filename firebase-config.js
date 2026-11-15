@@ -23,5 +23,6 @@ window.DDD_LOGIN = {
 window.DDD_API = {
   tmdbKey: "a377ae92d0900f516b8f8fe2443aaa49",           // 영화·드라마: themoviedb.org에서 무료로 받은 API 키(v3 auth)
   googleBooksKey: "AIzaSyCfZGDOdqurCGd0yKwJIyT8CbInwOvJzBQ",    // 책: 비워 둬도 검색돼요. 사용량이 많아지면 Google Cloud에서 받은 키를 넣으세요
-  kakaoRestKey: ""       // 책(선택): 카카오 REST API 키. 넣으면 카카오 책 검색을 먼저 써요
+  kakaoRestKey: "",      // 책(선택): 카카오 REST API 키. 넣으면 카카오 책 검색을 먼저 써요
+  googleMapsKey: ""      // 여행 지도(선택): Google Maps JavaScript API 키. 비워 두면 OpenStreetMap 지도를 써요
 };

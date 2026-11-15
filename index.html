@@ -803,6 +803,28 @@ html.fb section:has(#shSync){display:none}
 }
 html,body{max-width:100%;overflow-x:hidden}
 
+/* ---- v12 ---- */
+.grid[data-mode="select"] .track{touch-action:manipulation}
+.dph-t{display:flex;align-items:center;gap:8px}.dph-t .pchip{margin-left:auto;font-weight:500}
+.rgseg{margin-bottom:8px;width:fit-content}.rgseg small{opacity:.7;font-weight:400}
+.logbox{border:1px solid var(--line);border-radius:12px;padding:10px;background:color-mix(in srgb,var(--c-dev,#8B3FE0) 5%,var(--sheet));display:grid;gap:8px;margin:4px 0 10px}
+.loghead{display:grid;gap:2px}.loghead small{color:var(--muted);font-size:12px}
+.logadd{display:grid;gap:6px}.logadd textarea{width:100%}.logadd .hand{font-size:19px}
+.loglist{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:320px;overflow:auto}
+.loglist li{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.loglist .lgh{display:flex;align-items:center;gap:6px}.loglist .lgh .x{margin-left:auto;border:0;background:none;color:var(--muted);font-size:16px}
+.loglist p{margin:4px 0 0;white-space:pre-wrap;font-size:14px}
+.loglist blockquote{margin:6px 0 0;padding:2px 10px;border-left:3px solid var(--c-dev,#8B3FE0);font-size:19px;line-height:1.3;white-space:pre-wrap}
+.exsum{display:grid;grid-template-columns:1fr 1fr;gap:10px}.exsum h3{margin:0 0 4px;font-size:14px;color:var(--muted)}
+.exbig{font-size:15px}.exbig b{font-size:24px}
+.exchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.exchip{font-size:12.5px;background:var(--bg);border-radius:999px;padding:3px 10px}
+.exlist{display:grid;gap:6px}
+.exrow{display:flex;gap:10px;align-items:center;border:1px solid var(--line);background:var(--sheet);border-radius:12px;padding:8px 10px;text-align:left;color:inherit;cursor:pointer}
+.exrow .exi{font-size:26px;width:40px;text-align:center}.exrow .exm{flex:1;min-width:0;display:grid;gap:2px}.exrow small{color:var(--muted);font-size:12.5px}.exrow i{font-style:normal;font-size:13px}
+.exrow img{width:52px;height:52px;object-fit:cover;border-radius:8px}
+.exsp span{font-size:16px}
+@media (max-width:600px){.exsum{grid-template-columns:1fr}}
+
 @media print{
   body>*:not(#printRoot){display:none !important}
   body{background:#fff !important}
@@ -1413,7 +1435,7 @@ function drawBrush(){
     </div><select id="bSnap" aria-label="칠하기 단위" title="칠하기 단위">${[1,5,10].map(v=>`<option value="${v}" ${(S.settings.snap||10)===v?'selected':''}>${v}분 단위</option>`).join('')}</select></div>
   <div class="brow"><label>카테고리</label><div class="chips">${S.settings.cats.map(c=>`<button class="cchip" data-c="${c.id}" aria-pressed="${b.cat===c.id}"><i style="background:${c.color}"></i>${esc(c.name)}</button>`).join('')}<button class="pchip" id="editCats">편집</button></div></div>
   ${S.settings.presets.length?`<div class="brow"><label>최근</label><div class="chips">${S.settings.presets.slice(0,8).map((p,i)=>`<button class="pchip" data-p="${i}"><i style="background:${cat(p.cat).color}"></i>${esc(p.text)}</button>`).join('')}</div></div>`:''}
-  <div class="draginfo" id="dragInfo" aria-live="polite">${UI.mode==='paint'?'🖍 칠하기 중: 칸을 드래그하세요. 같은 카테고리를 한 번 더 누르면 칠하기가 꺼져요.':UI.mode==='erase'?'지우개 사용 중: 지울 칸을 드래그하세요.':'✋ 보기·수정 중: 화면을 자유롭게 스크롤하고, 칠한 칸을 누르면 고칠 수 있어요. 카테고리를 고르면 칠하기가 켜져요.'}</div>`;
+  <div class="draginfo" id="dragInfo" aria-live="polite">${UI.mode==='paint'?'🖍 칠하기 중: 칸을 드래그하세요. 같은 카테고리를 한 번 더 누르면 칠하기가 꺼져요.':UI.mode==='erase'?'지우개 사용 중: 지울 칸을 드래그하세요.':'✋ 보기·수정 중: 화면을 자유롭게 스크롤하고, 두 번 탭하면 그 시간을 고치거나 새로 적을 수 있어요. 카테고리를 고르면 칠하기가 켜져요.'}</div>`;
   $('#bText').oninput=e=>{b.text=e.target.value};
   $('#bText').onchange=e=>{const p=S.settings.presets.find(x=>x.text===e.target.value.trim());if(p){b.cat=p.cat;b.tags=[...(p.tags||[])];drawBrush()}};
   el.querySelectorAll('.cchip').forEach(x=>x.onclick=()=>{if(b.cat===x.dataset.c&&UI.mode==='paint'){b.cat=null;UI.mode='select'}else{b.cat=x.dataset.c;UI.mode='paint'}drawBrush();$('#grid').dataset.mode=UI.mode});
@@ -1488,14 +1510,7 @@ function autoScroll(){
 main.addEventListener('pointerdown',e=>{
   const g=e.target.closest('#grid');if(!g)return;const tr=e.target.closest('.track');if(!tr)return;
   const k=dkey(UI.date);
-  if(UI.mode==='select'){
-    const seg=e.target.closest('.seg');
-    if(seg&&seg.dataset.id){openEditor(k,seg.dataset.id);return}
-    const c=cellAt(e.clientX,e.clientY);if(c==null)return;
-    const d=peekDay(k);const m=c;const hit=d&&d.entries.find(x=>x.s<=m&&x.e>m);
-    if(hit)openEditor(k,hit.id);else{const s0=Math.floor(c/10)*10;openEditor(k,null,{s:s0,e:Math.min(1440,s0+30)})}
-    return;
-  }
+  if(UI.mode==='select'){tapStart={x:e.clientX,y:e.clientY,t:Date.now(),id:e.pointerId};return}
   if(e.button!==undefined&&e.button!==0)return;
   if(UI.mode==='paint'&&!UI.brush.cat)return;
   const c=cellAt(e.clientX,e.clientY);if(c==null)return;
@@ -1524,8 +1539,15 @@ function endDrag(e,cancel){
   const info=$('#dragInfo');if(info&&dr.msg)info.textContent=dr.msg;
 }
 function redrawBrushKeepFocus(){const t=$('#bText');const focused=document.activeElement===t;drawBrush();if(focused)$('#bText').focus()}
-main.addEventListener('pointerup',e=>endDrag(e,false));
-main.addEventListener('pointercancel',e=>endDrag(e,true));
+let tapStart=null,lastTap=null;
+function openAtPoint(x,y,el){const k=dkey(UI.date);const seg=el.closest('.seg');if(seg&&seg.dataset.id){openEditor(k,seg.dataset.id);return}const c=cellAt(x,y);if(c==null)return;const d=peekDay(k);const hit=d&&d.entries.find(q=>q.s<=c&&q.e>c);if(hit)openEditor(k,hit.id);else{const s0=Math.floor(c/10)*10;openEditor(k,null,{s:s0,e:Math.min(1440,s0+30)})}}
+function selectTap(e){if(UI.mode!=='select'||!tapStart||e.pointerId!==tapStart.id)return;const ts=tapStart;tapStart=null;
+  if(Math.hypot(e.clientX-ts.x,e.clientY-ts.y)>10||Date.now()-ts.t>600){lastTap=null;return}
+  const el=document.elementFromPoint(e.clientX,e.clientY);if(!el||!el.closest('#grid .track')){lastTap=null;return}
+  const now=Date.now();if(lastTap&&now-lastTap.t<450&&Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<34){lastTap=null;openAtPoint(e.clientX,e.clientY,el);return}
+  lastTap={x:e.clientX,y:e.clientY,t:now};const info=$('#dragInfo');if(info)info.textContent='👆👆 같은 곳을 두 번 탭(더블클릭)하면 그 시간의 기록을 고치거나 새로 적을 수 있어요.'}
+main.addEventListener('pointerup',e=>{selectTap(e);endDrag(e,false)});
+main.addEventListener('pointercancel',e=>{tapStart=null;endDrag(e,true)});
 
 /* ---------- entry editor (with photos) ---------- */
 function openEditor(k,id,preset){
@@ -2240,8 +2262,10 @@ const tmin=v=>{const [h,m]=v.split(':').map(Number);return h*60+m};
 function drawDayPhotos(){
   const el=$('#dayPhotos');if(!el)return;const k=dkey(UI.date);
   const ph=Object.values(PHOTOS).filter(p=>p.date===k).sort((a,b)=>(a.s||0)-(b.s||0));
-  el.innerHTML=ph.length?`<h3 class="dph-t">오늘의 사진 <small>${ph.length}장</small></h3><div class="dphs">${ph.map(p=>{const c=cat(p.cat);return `<button class="dph" data-p="${p.id}" style="--pc:${c.color}" aria-label="${esc(p.text||c.name)} 사진"><img src="${photoSrc(p)}" alt=""><span><b>${hm(p.s||0)}</b> ${esc(p.text||c.name)}</span></button>`}).join('')}</div>`:'';
+  el.innerHTML=`<h3 class="dph-t">오늘의 사진 <small>${ph.length}장</small><button class="pchip" id="dphAdd">📷 사진 추가</button></h3>`+(ph.length?`<div class="dphs">${ph.map(p=>{const c=cat(p.cat);return `<button class="dph" data-p="${p.id}" style="--pc:${c.color}" aria-label="${esc(p.text||c.name)} 사진"><img src="${photoSrc(p)}" alt=""><span><b>${hm(p.s||0)}</b> ${esc(p.text||c.name)}</span></button>`}).join('')}</div>`:'');
   el.querySelectorAll('.dph').forEach(b=>b.onclick=()=>openPhoto(PHOTOS[b.dataset.p]));
+  $('#dphAdd').onclick=()=>{if(AUTH.demo){toast('체험 계정에서는 사진을 올릴 수 없어요');return}const inp=$('#photoInput');inp.value='';inp.onchange=async()=>{const now=new Date();const s0=k===todayKey()?now.getHours()*60+now.getMinutes():720;
+    for(const file of [...inp.files].slice(0,6)){try{await addPhotoFile(file,{date:k,entryId:'',s:s0,e:s0,cat:brushCat(),text:'오늘의 사진',tags:[]},()=>{})}catch(e){toast('사진을 읽지 못했어요')}}drawDayPhotos();toast('사진을 저장했어요')};inp.click()};
 }
 
 /* ---------- routines (반복 일과) ---------- */
@@ -2960,14 +2984,17 @@ function pagesMonth(sp){
   return [{title,html:left},{title,html:right}];
 }
 
-/* ---------- 관심사 (interests) ---------- */
+/* ---------- 관심사 (interests) v12 ---------- */
 const IX_TYPES={
-  book:{label:'책형',subL:'지은이',dateL:'다 읽은 날',statuses:[['want','읽고 싶어요'],['doing','읽는 중'],['done','다 읽었어요'],['stop','그만 읽었어요']]},
-  screen:{label:'영화·드라마형',subL:'감독 · 출연',dateL:'본 날',statuses:[['want','보고 싶어요'],['doing','보는 중'],['done','다 봤어요'],['stop','그만 봤어요']]},
-  travel:{label:'여행형 (지도)',subL:'지역',dateL:'떠난 날',statuses:null},
-  custom:{label:'일반형',subL:'부제목',dateL:'날짜',statuses:null}};
-const IX_DEFAULT=[{id:'book',name:'책',icon:'📚',type:'book'},{id:'screen',name:'영화·드라마',icon:'🎬',type:'screen'},{id:'travel',name:'여행',icon:'✈️',type:'travel'}];
-function ixList(){if(!Array.isArray(S.settings.interests))S.settings.interests=clone(IX_DEFAULT);return S.settings.interests}
+  book:{label:'책형',subL:'지은이',dateL:'시작한 날',statuses:[['want','읽고 싶어요'],['doing','읽는 중'],['done','다 읽었어요'],['stop','그만 읽었어요']],logL:'독서 노트',logHint:'오늘 읽은 부분의 느낀 점이나 좋은 글귀를 남겨요'},
+  screen:{label:'영화·드라마형',subL:'감독 · 출연',dateL:'처음 본 날',statuses:[['want','보고 싶어요'],['doing','보는 중'],['done','다 봤어요'],['stop','그만 봤어요']],logL:'감상 노트',logHint:'오늘 본 회차나 장면의 감상을 남겨요'},
+  travel:{label:'여행형 (지도)',subL:'지역',dateL:'떠난 날',statuses:null,logL:'여행 일지',logHint:'날마다 있었던 일을 일기처럼 이어서 남겨요'},
+  exercise:{label:'운동형',subL:'장소',dateL:'날짜',statuses:null},
+  custom:{label:'일반형',subL:'부제목',dateL:'날짜',statuses:null,logL:'이어 쓰기',logHint:'같은 주제로 이어서 기록해요'}};
+const IX_DEFAULT=[{id:'book',name:'책',icon:'📚',type:'book'},{id:'screen',name:'영화·드라마',icon:'🎬',type:'screen'},{id:'travel',name:'여행',icon:'✈️',type:'travel'},{id:'exercise',name:'운동',icon:'🏃',type:'exercise'}];
+function ixList(){if(!Array.isArray(S.settings.interests))S.settings.interests=clone(IX_DEFAULT);
+  if(!S.settings.ixV){S.settings.ixV=2;if(!S.settings.interests.find(x=>x.type==='exercise'))S.settings.interests.push({id:'exercise',name:'운동',icon:'🏃',type:'exercise'});touch('settings')}
+  return S.settings.interests}
 let ITEMS={},itemsUnsub=null,ixMaps=[];
 const API=()=>window.DDD_API||{};
 function startItems(){
@@ -2982,16 +3009,47 @@ async function dropItem(id){delete ITEMS[id];if(DB&&BASE){try{await DB.doc(BASE+
 function starsHTML(r){r=+r||0;return `<span class="stars" aria-label="별점 ${r}점"><span style="width:${r/5*100}%">★★★★★</span>★★★★★</span>`}
 const ixCount=iid=>Object.values(ITEMS).filter(it=>it.iid===iid).length;
 function killMaps(){ixMaps.forEach(m=>{try{m.remove()}catch(e){}});ixMaps=[]}
+document.addEventListener('click',e=>{const a=e.target.closest&&e.target.closest('[data-pop]');if(!a)return;e.preventDefault();const it=ITEMS[a.dataset.pop];if(it)openItem(it.iid,it.id)});
+
+/* --- maps: Google Maps when a key is set, otherwise OpenStreetMap --- */
+const useGoogle=()=>!!API().googleMapsKey;
 const LEAF_CSS='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css',LEAF_JS='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js';
 async function loadLeaflet(){if(!document.querySelector(`link[href="${LEAF_CSS}"]`)){const l=document.createElement('link');l.rel='stylesheet';l.href=LEAF_CSS;document.head.appendChild(l)}await loadScript(LEAF_JS);return window.L}
-function newMap(el,places,opts){const L=window.L;const map=L.map(el,{scrollWheelZoom:false,tap:true}).setView([36.4,127.9],7);
+let gmP=null;
+function loadGMaps(){if(window.google&&window.google.maps&&window.google.maps.Map)return Promise.resolve(window.google.maps);
+  if(!gmP)gmP=new Promise((res,rej)=>{window.__dddGm=()=>res(window.google.maps);window.gm_authFailure=()=>{window.__gmAuthFail=true;toast('Google 지도 키가 맞지 않거나 이 주소에서 쓸 수 없게 되어 있어요.')};const s=document.createElement('script');s.src=`https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(API().googleMapsKey)}&v=weekly&language=ko&region=KR&loading=async&callback=__dddGm`;s.async=true;s.onerror=()=>{gmP=null;rej(new Error('gmaps'))};document.head.appendChild(s)});
+  return gmP}
+async function loadMapLib(){return useGoogle()?loadGMaps():loadLeaflet()}
+function newMap(el,places,opts){opts=opts||{};
+  if(useGoogle()){const g=window.google.maps;const map=new g.Map(el,{center:{lat:36.4,lng:127.9},zoom:7,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'cooperative'});
+    let marks=[];const info=new g.InfoWindow();const obj={map,remove(){marks.forEach(m=>m.setMap(null))},
+      draw(list){marks.forEach(m=>m.setMap(null));marks=[];const b=new g.LatLngBounds();let n=0;(list||[]).forEach((p,i)=>{if(p.lat==null)return;const m=new g.Marker({position:{lat:p.lat,lng:p.lng},map,label:opts.num?String(i+1):undefined,title:p.name||''});if(p.popup)m.addListener('click',()=>{info.setContent(p.popup);info.open({map,anchor:m})});marks.push(m);b.extend(m.getPosition());n++});
+        if(n===1){map.setCenter(marks[0].getPosition());map.setZoom(11)}else if(n>1)map.fitBounds(b,40);else if(opts.world){map.setCenter({lat:25,lng:40});map.setZoom(2)}},
+      onClick(fn){map.addListener('click',ev=>fn(ev.latLng.lat(),ev.latLng.lng()))}};
+    obj.draw(places);ixMaps.push(obj);return obj}
+  const L=window.L;const map=L.map(el,{scrollWheelZoom:false,tap:true}).setView([36.4,127.9],7);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; OpenStreetMap'}).addTo(map);
-  ixMaps.push(map);const layer=L.layerGroup().addTo(map);
-  const draw=list=>{layer.clearLayers();const pts=[];list.forEach((p,i)=>{if(p.lat==null)return;const icon=L.divIcon({className:'ixpin',html:`<span>${opts&&opts.num?i+1:(p.icon||'📍')}</span>`,iconSize:[28,28],iconAnchor:[14,26]});const mk=L.marker([p.lat,p.lng],{icon}).addTo(layer);if(p.popup)mk.bindPopup(p.popup);pts.push([p.lat,p.lng])});
-    if(pts.length===1)map.setView(pts[0],11);else if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:12})};
-  draw(places||[]);setTimeout(()=>map.invalidateSize(),120);return {map,draw}}
-async function geoSearch(q){const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=6&accept-language=ko&q='+encodeURIComponent(q));if(!r.ok)throw new Error('geo');const j=await r.json();return j.map(x=>({name:x.name||String(x.display_name).split(',')[0],full:x.display_name,lat:+x.lat,lng:+x.lon}))}
-async function geoReverse(lat,lng){try{const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=14&accept-language=ko&lat=${lat}&lon=${lng}`);const j=await r.json();const a=j.address||{};return j.name||a.city||a.town||a.village||a.county||a.state||'지도에서 고른 곳'}catch(e){return '지도에서 고른 곳'}}
+  const layer=L.layerGroup().addTo(map);
+  const obj={map,remove(){map.remove()},
+    draw(list){layer.clearLayers();const pts=[];(list||[]).forEach((p,i)=>{if(p.lat==null)return;const icon=L.divIcon({className:'ixpin',html:`<span>${opts.num?i+1:(p.icon||'📍')}</span>`,iconSize:[28,28],iconAnchor:[14,26]});const mk=L.marker([p.lat,p.lng],{icon}).addTo(layer);if(p.popup)mk.bindPopup(p.popup);pts.push([p.lat,p.lng])});
+      if(pts.length===1)map.setView(pts[0],11);else if(pts.length>1)map.fitBounds(pts,{padding:[30,30],maxZoom:12});else if(opts.world)map.setView([25,40],2)},
+    onClick(fn){map.on('click',ev=>fn(ev.latlng.lat,ev.latlng.lng))}};
+  obj.draw(places);setTimeout(()=>map.invalidateSize(),120);ixMaps.push(obj);return obj}
+const ccOf=comps=>{const c=(comps||[]).find(x=>(x.types||[]).includes('country'));return c?c.short_name.toLowerCase():''};
+async function geoSearch(q){
+  if(useGoogle()){await loadGMaps();const g=window.google.maps;const res=await new g.Geocoder().geocode({address:q,language:'ko'});return (res.results||[]).slice(0,6).map(r=>({name:(r.address_components&&r.address_components[0]&&r.address_components[0].long_name)||r.formatted_address,full:r.formatted_address,lat:r.geometry.location.lat(),lng:r.geometry.location.lng(),cc:ccOf(r.address_components)}))}
+  const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=6&accept-language=ko&q='+encodeURIComponent(q));if(!r.ok)throw new Error('geo');const j=await r.json();
+  return j.map(x=>({name:x.name||String(x.display_name).split(',')[0],full:x.display_name,lat:+x.lat,lng:+x.lon,cc:((x.address||{}).country_code||'').toLowerCase()}))}
+async function geoReverse(lat,lng){
+  try{if(useGoogle()){await loadGMaps();const g=window.google.maps;const res=await new g.Geocoder().geocode({location:{lat,lng},language:'ko'});const r=(res.results||[])[0];if(!r)return {name:'지도에서 고른 곳',cc:''};
+      const pick=t=>(r.address_components.find(c=>c.types.includes(t))||{}).long_name;return {name:pick('point_of_interest')||pick('sublocality_level_1')||pick('locality')||pick('administrative_area_level_1')||r.formatted_address,cc:ccOf(r.address_components)}}
+    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=14&accept-language=ko&lat=${lat}&lon=${lng}`);const j=await r.json();const a=j.address||{};
+    return {name:j.name||a.city||a.town||a.village||a.county||a.state||'지도에서 고른 곳',cc:(a.country_code||'').toLowerCase()}}catch(e){return {name:'지도에서 고른 곳',cc:''}}}
+const itemRegion=it=>it.region||((it.places||[]).some(p=>p.cc&&p.cc!=='kr')?'abroad':'domestic');
+
+/* --- book / screen search --- */
+async function searchOpenLibrary(q){const r=await fetch('https://openlibrary.org/search.json?limit=12&q='+encodeURIComponent(q));if(!r.ok)return [];const j=await r.json();
+  return (j.docs||[]).map(d=>({src:'openlibrary',extId:d.key,title:d.title||'',sub:(d.author_name||[]).join(', '),publisher:(d.publisher||[])[0]||'',published:String(d.first_publish_year||''),cover:d.cover_i?`https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg`:'',description:'',isbn:(d.isbn||[])[0]||'',link:'https://openlibrary.org'+d.key}))}
 async function searchBooks(q){
   const kk=API().kakaoRestKey;
   if(kk){try{const r=await fetch('https://dapi.kakao.com/v3/search/book?size=12&query='+encodeURIComponent(q),{headers:{Authorization:'KakaoAK '+kk}});if(r.ok){const j=await r.json();return (j.documents||[]).map(d=>({src:'kakao',extId:d.isbn||d.url,title:d.title,sub:(d.authors||[]).join(', '),publisher:d.publisher||'',published:(d.datetime||'').slice(0,10),cover:d.thumbnail||'',description:(d.contents||'').slice(0,1200),isbn:d.isbn||'',link:d.url||''}))}}catch(e){}}
@@ -2999,8 +3057,6 @@ async function searchBooks(q){
   if(!r||!r.ok){const st=r?r.status:0;const ol=await searchOpenLibrary(q).catch(()=>[]);if(ol.length)return ol;throw {code:'books',status:st}}const j=await r.json();
   return (j.items||[]).map(v=>{const i=v.volumeInfo||{};const img=((i.imageLinks&&(i.imageLinks.thumbnail||i.imageLinks.smallThumbnail))||'').replace(/^http:/,'https:');
     return {src:'google',extId:v.id,title:(i.title||'')+(i.subtitle?': '+i.subtitle:''),sub:(i.authors||[]).join(', '),publisher:i.publisher||'',published:i.publishedDate||'',cover:img,description:String(i.description||'').replace(/<[^>]+>/g,'').slice(0,1200),isbn:(i.industryIdentifiers||[]).map(x=>x.identifier).join(' '),pages:i.pageCount||0,genres:(i.categories||[]).join(', '),extRating:i.averageRating||null,extCount:i.ratingsCount||0,extScale:5,link:i.infoLink||''}})}
-async function searchOpenLibrary(q){const r=await fetch('https://openlibrary.org/search.json?limit=12&q='+encodeURIComponent(q));if(!r.ok)return [];const j=await r.json();
-  return (j.docs||[]).map(d=>({src:'openlibrary',extId:d.key,title:d.title||'',sub:(d.author_name||[]).join(', '),publisher:(d.publisher||[])[0]||'',published:String(d.first_publish_year||''),cover:d.cover_i?`https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg`:'',description:'',isbn:(d.isbn||[])[0]||'',link:'https://openlibrary.org'+d.key}))}
 async function searchScreen(q){
   const key=API().tmdbKey;if(!key)throw {code:'nokey'};
   const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${encodeURIComponent(key)}&language=ko-KR&include_adult=false&query=${encodeURIComponent(q)}`);if(!r.ok)throw {code:'tmdb',status:r.status};const j=await r.json();
@@ -3009,14 +3065,92 @@ async function tmdbDetail(ext){const key=API().tmdbKey;if(!key)return {};const [
   try{const r=await fetch(`https://api.themoviedb.org/3/${t}/${id}?api_key=${encodeURIComponent(key)}&language=ko-KR&append_to_response=credits`);const j=await r.json();const cr=j.credits||{};
     const director=t==='movie'?(cr.crew||[]).filter(c=>c.job==='Director').map(c=>c.name).slice(0,2).join(', '):(j.created_by||[]).map(c=>c.name).slice(0,2).join(', ');
     return {genres:(j.genres||[]).map(g=>g.name).join(', '),director,cast:(cr.cast||[]).slice(0,4).map(c=>c.name).join(', '),runtime:j.runtime||((j.episode_run_time||[])[0])||0,seasons:j.number_of_seasons||0,link:`https://www.themoviedb.org/${t}/${id}`}}catch(e){return {}}}
-function extCardHTML(e,type){if(!e)return '';
+function searchErrMsg(e){return e&&e.code==='nokey'?'영화·드라마 검색 키가 아직 안 보여요. firebase-config.js의 tmdbKey를 확인하고, 화면을 새로고침(Ctrl+F5)해 주세요.':e&&e.code==='tmdb'?(e.status===401?'TMDB API 키가 맞지 않아요(401). "API 읽기 액세스 토큰"이 아니라 짧은 "API 키"를 넣었는지 확인해 주세요.':`TMDB 검색에 실패했어요(${e.status}). 잠시 뒤 다시 해 주세요.`):e&&e.code==='books'?(e.status===429?'Google 도서 무료 사용량이 다 찼어요(429). firebase-config.js에 googleBooksKey를 넣으면 해결돼요.':e.status===403?'Google 도서 API 키 설정을 확인해 주세요(403). Books API 사용 설정과 웹사이트 제한 주소를 확인해야 해요.':`책 검색에 실패했어요(${e.status||'연결 안 됨'}). 잠시 뒤 다시 해 보거나 직접 적어 주세요.`):'검색하지 못했어요. 잠시 뒤 다시 해 보거나 직접 적어 주세요.'}
+function extCardHTML(e){if(!e)return '';
   const rate=e.extRating!=null?`<span class="ixextrate">${e.src==='tmdb'?'TMDB':'Google 도서'} 평점 <b>${e.extRating}</b> / ${e.extScale||5}${e.extCount?` (${e.extCount}명)`:''}</span>`:'';
   const meta=[e.mediaType?(e.mediaType==='tv'?'드라마·TV':'영화'):'',e.published?String(e.published).slice(0,10):'',e.publisher,e.genres,e.runtime?`${e.runtime}분`:'',e.seasons?`시즌 ${e.seasons}`:'',e.pages?`${e.pages}쪽`:''].filter(Boolean).join(' · ');
   return `<div class="ixext">${e.cover?`<img src="${esc(e.cover)}" alt="" referrerpolicy="no-referrer">`:''}<div><b>${esc(e.title||'')}</b>${e.original&&e.original!==e.title?`<small>${esc(e.original)}</small>`:''}<small>${esc(meta)}</small>${e.director?`<small>감독·제작 ${esc(e.director)}</small>`:''}${e.cast?`<small>출연 ${esc(e.cast)}</small>`:''}${rate}${e.description?`<p>${esc(e.description)}</p>`:''}${e.link?`<a href="${esc(e.link)}" target="_blank" rel="noopener">자세히 보기</a>`:''}${e.src==='tmdb'?'<small class="tmdbnote">이 정보는 TMDB API를 사용했어요. TMDB가 보증하거나 인증한 서비스는 아니에요.</small>':''}</div></div>`}
+
+/* --- exercise --- */
+const SPORTS=[{k:'walk',n:'걷기',i:'🚶',du:'km',pace:1,steps:1},{k:'run',n:'달리기',i:'🏃',du:'km',pace:1,steps:1},{k:'bike',n:'자전거',i:'🚴',du:'km',speed:1,elev:1},{k:'swim',n:'수영',i:'🏊',du:'m',swim:1},{k:'hike',n:'등산',i:'🥾',du:'km',elev:1,steps:1,mount:1},{k:'etc',n:'기타',i:'💪',du:'km'}];
+const sportOf=k=>SPORTS.find(s=>s.k===k)||SPORTS[5];
+const INTENS=[['easy','😌 가볍게'],['mid','🙂 적당히'],['hard','🔥 힘들게']];
+function exStat(it){const sp=sportOf(it.sport);const d=+it.dist||0,m=+it.durMin||0;
+  if(sp.pace&&d>0&&m>0){const p=m/d;return `${Math.floor(p)}'${pad(Math.round((p%1)*60))}" /km`}
+  if(sp.speed&&d>0&&m>0)return `${Math.round(d/(m/60)*10)/10} km/h`;
+  if(sp.swim&&d>0&&m>0){const p=m/(d/100);return `${Math.floor(p)}'${pad(Math.round((p%1)*60))}" /100m`}return ''}
+const exDist=it=>{const sp=sportOf(it.sport);return +it.dist?`${it.dist}${sp.du}`:''};
+function exTitle(it){const sp=sportOf(it.sport);return `${sp.n}${it.sport==='etc'&&it.etcName?` (${it.etcName})`:''}${it.place?` · ${it.place}`:''}`}
+function drawExerciseBody(cur){
+  const all=Object.values(ITEMS).filter(it=>it.iid===cur.id).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||String(b.start||'').localeCompare(String(a.start||'')));
+  const mon=dkey(monday(new Date())),m1=todayKey().slice(0,7);
+  const sum=list=>{const r={n:list.length,min:0,by:{}};list.forEach(it=>{r.min+=+it.durMin||0;const s=it.sport||'etc';r.by[s]=r.by[s]||{n:0,dist:0,min:0};r.by[s].n++;r.by[s].dist+=+it.dist||0;r.by[s].min+=+it.durMin||0});return r};
+  const wk=sum(all.filter(it=>it.date>=mon)),mo=sum(all.filter(it=>String(it.date).startsWith(m1)));
+  const chips=r=>Object.entries(r.by).map(([k,v])=>{const sp=sportOf(k);return `<span class="exchip">${sp.i} ${sp.n} <b>${v.n}회</b>${v.dist?` · ${Math.round(v.dist*10)/10}${sp.du}`:''}</span>`}).join('')||'<span class="hint">아직 기록이 없어요</span>';
+  const body=$('#ixBody');
+  body.innerHTML=`<div class="exsum"><section class="sheet"><h3>이번 주</h3><div class="exbig"><b>${wk.n}</b>회 · <b>${dur(wk.min)}</b></div><div class="exchips">${chips(wk)}</div></section>
+     <section class="sheet"><h3>이번 달</h3><div class="exbig"><b>${mo.n}</b>회 · <b>${dur(mo.min)}</b></div><div class="exchips">${chips(mo)}</div></section></div>
+    <section class="sheet" style="margin:10px 0"><h3 style="margin:0 0 6px">최근 8주 운동 시간</h3><div class="cbox" style="height:220px"><canvas id="exChart"></canvas></div></section>
+    <p class="hint">삼성헬스·구글 헬스(Health Connect)는 웹에서 바로 가져올 수 없어서 직접 입력해요. 시작 시각을 넣으면 하루 화면의 Do 시간표에도 함께 칠해져요.</p>
+    ${all.length?`<div class="exlist">${all.map(it=>{const sp=sportOf(it.sport);const st=exStat(it);return `<button class="exrow" data-it="${it.id}"><span class="exi">${sp.i}</span><span class="exm"><b>${esc(exTitle(it))}</b><small>${kShort(it.date)}${it.start?' '+it.start:''} · ${dur(+it.durMin||0)}${exDist(it)?' · '+exDist(it):''}${st?' · '+st:''}${it.kcal?` · ${it.kcal}kcal`:''}${it.steps?` · ${Number(it.steps).toLocaleString()}보`:''}${it.elev?` · ↗${it.elev}m`:''}</small>${it.review?`<i>${esc(it.review).slice(0,80)}</i>`:''}</span>${(it.photos||[]).length?`<img src="${it.photos[0]}" alt="">`:''}</button>`}).join('')}</div>`:`<div class="sheet empty">아직 운동 기록이 없어요. 위의 "＋ ${esc(cur.name)} 기록"으로 시작해 보세요.</div>`}`;
+  body.querySelectorAll('[data-it]').forEach(b=>b.onclick=()=>openExercise(cur.id,b.dataset.it));
+  if(window.Chart){const weeks=[];const start=addDays(monday(new Date()),-49);for(let i=0;i<8;i++)weeks.push(addDays(start,i*7));
+    const used=[...new Set(all.map(it=>it.sport||'etc'))];const cs=getComputedStyle(document.documentElement);const muted=cs.getPropertyValue('--muted').trim(),line=cs.getPropertyValue('--line').trim();
+    const COL={walk:'#6EDC9A',run:'#FF7EB0',bike:'#6EC3FF',swim:'#5FE0D2',hike:'#FFA95A',etc:'#B99BFF'};
+    const ds=used.map(k=>({label:sportOf(k).n,backgroundColor:COL[k]||'#C2C8D0',borderRadius:3,stack:'s',data:weeks.map(w=>{const a=dkey(w),b=dkey(addDays(w,6));return Math.round(all.filter(it=>(it.sport||'etc')===k&&it.date>=a&&it.date<=b).reduce((s,it)=>s+(+it.durMin||0),0)/6)/10})}));
+    charts.push(new Chart($('#exChart'),{type:'bar',data:{labels:weeks.map(w=>`${w.getMonth()+1}/${w.getDate()}`),datasets:ds},options:{responsive:true,maintainAspectRatio:false,animation:false,scales:{x:{stacked:true,grid:{display:false},ticks:{color:muted}},y:{stacked:true,grid:{color:line},ticks:{color:muted},title:{display:true,text:'시간',color:muted}}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,color:muted}}}}}))}
+}
+function openExercise(iid,id,preset){
+  const cur=ixList().find(x=>x.id===iid);const ex=id?ITEMS[id]:null;
+  const now=new Date();const f=ex?clone(ex):Object.assign({id:'x'+uid(),iid,sport:'walk',etcName:'',date:todayKey(),start:'',durMin:30,dist:'',steps:'',kcal:'',hr:'',elev:'',place:'',intensity:'mid',review:'',photos:[],toDo:true,createdAt:Date.now()},preset||{});
+  const box=openModal(`<h3>${esc(cur.icon||'🏃')} 운동 ${ex?'기록 고치기':'기록하기'}</h3>
+    <div class="field"><span>종목</span><div class="chips" id="exSp">${SPORTS.map(s=>`<button type="button" class="cchip exsp" data-s="${s.k}"><span>${s.i}</span>${s.n}</button>`).join('')}</div></div>
+    <label class="field" id="exEtcF"><span>운동 이름</span><input id="exEtc" placeholder="예: 요가, 배드민턴, 필라테스" maxlength="30"></label>
+    <div class="trow"><label class="field" style="flex:1"><span>날짜</span><input type="date" id="exDate"></label><label class="field" style="flex:1"><span>시작 시각 (선택)</span><input type="time" id="exStart" step="600"></label></div>
+    <div class="field"><span>운동 시간</span><div class="trow"><select id="exH" aria-label="시간">${Array.from({length:13},(_,h)=>`<option value="${h}">${h}시간</option>`).join('')}</select><select id="exM" aria-label="분">${Array.from({length:12},(_,i)=>`<option value="${i*5}">${i*5}분</option>`).join('')}</select></div></div>
+    <div class="trow"><label class="field" style="flex:1" id="exDistF"><span id="exDistL">거리</span><input type="number" id="exDist" min="0" step="0.01" inputmode="decimal"></label><label class="field" style="flex:1"><span>칼로리 (kcal)</span><input type="number" id="exKcal" min="0" inputmode="numeric"></label></div>
+    <p class="hint" id="exPace" style="margin:-4px 0 6px"></p>
+    <div class="trow"><label class="field" style="flex:1" id="exStepsF"><span>걸음 수</span><input type="number" id="exSteps" min="0" inputmode="numeric"></label><label class="field" style="flex:1" id="exElevF"><span>오른 높이 (m)</span><input type="number" id="exElev" min="0" inputmode="numeric"></label><label class="field" style="flex:1"><span>평균 심박 (bpm)</span><input type="number" id="exHr" min="0" inputmode="numeric"></label></div>
+    <label class="field"><span id="exPlaceL">장소</span><input id="exPlace" maxlength="60" placeholder="예: 남강 둔치, 동네 수영장"></label>
+    <div class="field"><span>강도</span><div class="chips" id="exIn">${INTENS.map(([v,l])=>`<button type="button" class="pchip" data-i="${v}">${l}</button>`).join('')}</div></div>
+    <label class="field"><span>메모</span><textarea id="exRev" rows="3" placeholder="컨디션, 코스, 기억에 남는 것"></textarea></label>
+    <div class="field"><span>사진 <small>최대 4장 · 운동 앱 화면을 캡처해 올려도 좋아요</small></span><div class="phstrip" id="exPh"></div></div>
+    <label class="agree" style="margin:0"><input type="checkbox" class="chk" id="exToDo"> <span>시작 시각이 있으면 하루 화면 Do 시간표에도 칠하기</span></label>
+    <div class="mfoot">${ex?'<button class="ghost danger" id="exDel">삭제</button>':''}<span class="sp"></span><button class="ghost" data-x>취소</button><button class="primary" id="exSave">저장</button></div>`);
+  box.classList.add('wide');
+  $('#exEtc').value=f.etcName||'';$('#exDate').value=f.date||'';$('#exStart').value=f.start||'';$('#exH').value=Math.min(12,Math.floor((+f.durMin||0)/60));$('#exM').value=Math.round(((+f.durMin||0)%60)/5)*5;
+  $('#exDist').value=f.dist||'';$('#exKcal').value=f.kcal||'';$('#exSteps').value=f.steps||'';$('#exElev').value=f.elev||'';$('#exHr').value=f.hr||'';$('#exPlace').value=f.place||'';$('#exRev').value=f.review||'';$('#exToDo').checked=f.toDo!==false;
+  const durNow=()=>(+$('#exH').value)*60+(+$('#exM').value);
+  const upd=()=>{const sp=sportOf(f.sport);box.querySelectorAll('#exSp [data-s]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===f.sport));
+    $('#exEtcF').style.display=f.sport==='etc'?'':'none';$('#exDistL').textContent=`거리 (${sp.du})`;$('#exStepsF').style.display=sp.steps?'':'none';$('#exElevF').style.display=sp.elev?'':'none';
+    $('#exPlaceL').textContent=sp.mount?'산 이름 · 코스':'장소';$('#exPlace').placeholder=sp.mount?'예: 지리산 천왕봉, 자굴산':sp.swim?'예: 군민 수영장':'예: 남강 둔치, 동네 공원';
+    const st=exStat({...f,dist:$('#exDist').value,durMin:durNow()});$('#exPace').textContent=st?`${sp.speed?'평균 속도':'평균 페이스'} ${st}`:''};
+  box.querySelectorAll('#exSp [data-s]').forEach(b=>b.onclick=()=>{f.sport=b.dataset.s;upd()});
+  const drawIn=()=>box.querySelectorAll('#exIn [data-i]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.i===f.intensity));drawIn();
+  box.querySelectorAll('#exIn [data-i]').forEach(b=>b.onclick=()=>{f.intensity=b.dataset.i;drawIn()});
+  ['exDist','exH','exM'].forEach(i=>$('#'+i).oninput=$('#'+i).onchange=upd);upd();
+  const drawPh=()=>{$('#exPh').innerHTML=(f.photos||[]).map((p,i)=>`<div class="phitem"><img src="${p}" alt="첨부 사진"><button type="button" class="rm" data-iph="${i}" aria-label="사진 빼기">×</button></div>`).join('')+((f.photos||[]).length<4?`<button type="button" class="phadd" id="exAddPh">＋<br>사진 추가</button>`:'');
+    $('#exPh').querySelectorAll('[data-iph]').forEach(b=>b.onclick=()=>{f.photos.splice(+b.dataset.iph,1);drawPh()});
+    const a=$('#exAddPh');if(a)a.onclick=()=>pickPhotos(f,4,drawPh)};drawPh();
+  onModalClose=()=>{if(UI.view==='interest')renderInterest();else if(UI.view==='day')render()};
+  if($('#exDel'))$('#exDel').onclick=async()=>{if(!confirm('이 운동 기록을 지울까요? (Do 시간표에 칠한 칸은 그대로 남아요)'))return;await dropItem(f.id);closeModal();toast('지웠어요')};
+  $('#exSave').onclick=async()=>{f.etcName=$('#exEtc').value.trim();f.date=$('#exDate').value||todayKey();f.start=$('#exStart').value;f.durMin=durNow();f.dist=$('#exDist').value;f.kcal=$('#exKcal').value;f.steps=$('#exSteps').value;f.elev=$('#exElev').value;f.hr=$('#exHr').value;f.place=$('#exPlace').value.trim();f.review=$('#exRev').value;f.toDo=$('#exToDo').checked;
+    if(!f.durMin&&!f.dist){toast('운동 시간이나 거리를 적어 주세요');return}
+    f.title=exTitle(f);f.sub=[dur(f.durMin),exDist(f)].filter(Boolean).join(' · ');f.rating=0;
+    if(f.toDo&&f.start&&f.durMin){const [h,mm]=f.start.split(':').map(Number);const s0=h*60+mm,e0=Math.min(1440,s0+f.durMin);
+      if(f.doRef){const d=peekDay(f.doRef.k);if(d){d.entries=d.entries.filter(x=>x.id!==f.doRef.id);touch(wkOf(f.doRef.k))}}
+      const c=S.settings.cats.find(x=>/운동/.test(x.name))||S.settings.cats[0];const ne=paint(f.date,s0,e0,{cat:c.id,text:sportOf(f.sport).n,tags:[],src:'manual',id:'ex'+f.id});if(ne)f.doRef={k:f.date,id:ne.id}}
+    $('#exSave').disabled=true;const ok=await putItem(f);$('#exSave').disabled=false;if(ok){closeModal();toast('운동을 기록했어요')}};
+}
+function pickPhotos(f,max,after){if(AUTH.demo){toast('체험 계정에서는 사진을 올릴 수 없어요');return}const inp=$('#photoInput');inp.value='';
+  inp.onchange=async()=>{f.photos=f.photos||[];for(const file of [...inp.files].slice(0,max-f.photos.length)){try{const im=await loadImg(file);f.photos.push(dataUrlUnder(im,1100,160000))}catch(e){toast('사진을 읽지 못했어요')}}after()};inp.click()}
+
+/* --- list / views --- */
 function ixFiltered(cur){
   let list=Object.values(ITEMS).filter(it=>it.iid===cur.id);const q=(UI.ixQ||'').trim().toLowerCase();
-  if(q)list=list.filter(it=>[it.title,it.sub,it.oneLine,it.review,(it.tags||[]).join(' '),(it.places||[]).map(p=>p.name).join(' ')].join(' ').toLowerCase().includes(q));
+  if(q)list=list.filter(it=>[it.title,it.sub,it.oneLine,it.review,(it.tags||[]).join(' '),(it.places||[]).map(p=>p.name).join(' '),(it.logs||[]).map(l=>l.text+' '+(l.quote||'')).join(' ')].join(' ').toLowerCase().includes(q));
   if(UI.ixStatus)list=list.filter(it=>it.status===UI.ixStatus);
+  if(cur.type==='travel'&&UI.ixRegion)list=list.filter(it=>itemRegion(it)===UI.ixRegion);
   const s=UI.ixSort||'recent';
   list.sort((a,b)=>s==='rating'?(b.rating||0)-(a.rating||0):s==='title'?String(a.title).localeCompare(String(b.title),'ko'):s==='date'?String(b.date||'').localeCompare(String(a.date||'')):(b.updatedAt||0)-(a.updatedAt||0));
   return list;
@@ -3028,82 +3162,102 @@ function renderInterest(){
   <div class="ixnav" role="tablist" aria-label="관심사">${list.map(x=>`<button role="tab" data-ix="${x.id}" aria-selected="${x.id===UI.ix}"><span class="ixi">${esc(x.icon||'⭐')}</span>${esc(x.name)}<small>${ixCount(x.id)}</small></button>`).join('')}<button class="ixman" id="ixMan">⚙ 관심사 관리</button></div>
   <div id="ixBody"></div>`;
   bindNotice();
-  main.querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{UI.ix=b.dataset.ix;UI.ixQ='';UI.ixStatus='';renderInterest()});
+  main.querySelectorAll('[data-ix]').forEach(b=>b.onclick=()=>{UI.ix=b.dataset.ix;UI.ixQ='';UI.ixStatus='';UI.ixRegion='';renderInterest()});
   $('#ixMan').onclick=openIxManage;
   if(!cur){$('#ixBody').innerHTML='<div class="sheet empty">관심사가 없어요. "관심사 관리"에서 추가해 보세요.</div>';return}
-  $('#ixAdd').onclick=()=>openItem(cur.id);
-  drawIxBody(cur);
+  $('#ixAdd').onclick=()=>cur.type==='exercise'?openExercise(cur.id):openItem(cur.id);
+  if(cur.type==='exercise')drawExerciseBody(cur);else drawIxBody(cur);
 }
 function drawIxBody(cur){
   const T=IX_TYPES[cur.type]||IX_TYPES.custom;const all=Object.values(ITEMS).filter(it=>it.iid===cur.id);const list=ixFiltered(cur);const y=String(new Date().getFullYear());
   const yearDone=all.filter(it=>String(it.date||'').startsWith(y)&&(!T.statuses||it.status==='done')).length;const rated=all.filter(it=>it.rating>0);const avg=rated.length?Math.round(rated.reduce((a,b)=>a+b.rating,0)/rated.length*10)/10:0;
+  const isTravel=cur.type==='travel';const nDom=all.filter(it=>itemRegion(it)==='domestic').length;
   const body=$('#ixBody');
-  body.innerHTML=`<div class="ixtools"><input id="ixQ" placeholder="제목, 내용, 태그로 찾기" value="${esc(UI.ixQ||'')}">
+  body.innerHTML=`${isTravel?`<div class="seg3 rgseg" role="group" aria-label="국내 해외">${[['','전체',all.length],['domestic','🇰🇷 국내',nDom],['abroad','🌏 해외',all.length-nDom]].map(([v,l,n])=>`<button data-rg="${v}" aria-pressed="${(UI.ixRegion||'')===v}">${l} <small>${n}</small></button>`).join('')}</div>`:''}
+    <div class="ixtools"><input id="ixQ" placeholder="제목, 내용, 태그로 찾기" value="${esc(UI.ixQ||'')}">
     ${T.statuses?`<select id="ixSt" aria-label="상태"><option value="">모든 상태</option>${T.statuses.map(([v,l])=>`<option value="${v}" ${UI.ixStatus===v?'selected':''}>${l}</option>`).join('')}</select>`:''}
     <select id="ixSort" aria-label="정렬">${[['recent','최근 기록순'],['date','날짜순'],['rating','내 별점순'],['title','제목순']].map(([v,l])=>`<option value="${v}" ${UI.ixSort===v?'selected':''}>${l}</option>`).join('')}</select></div>
-    <p class="hint">전체 ${all.length}개 | 올해 ${cur.type==='book'?'다 읽은 책':cur.type==='screen'?'다 본 작품':cur.type==='travel'?'다녀온 여행':'기록'} ${yearDone}개${rated.length?` | 내 평균 별점 ${avg}`:''}</p>
-    ${cur.type==='travel'||cur.map?`<div id="ixMap" class="ixmap"></div>`:''}
+    <p class="hint">전체 ${all.length}개 | 올해 ${cur.type==='book'?'다 읽은 책':cur.type==='screen'?'다 본 작품':isTravel?'다녀온 여행':'기록'} ${yearDone}개${rated.length?` | 내 평균 별점 ${avg}`:''}</p>
+    ${isTravel?`<div id="ixMap" class="ixmap"></div>`:''}
     ${list.length?`<div class="ixgrid${cur.type==='book'||cur.type==='screen'?' poster':''}">${list.map(it=>ixCard(it,cur)).join('')}</div>`:`<div class="sheet empty">${all.length?'조건에 맞는 기록이 없어요.':`아직 기록이 없어요. 위의 "＋ ${esc(cur.name)} 기록"으로 시작해 보세요.`}</div>`}`;
   const q=$('#ixQ');q.oninput=()=>{UI.ixQ=q.value;clearTimeout(q._t);q._t=setTimeout(()=>{const pos=q.selectionStart;drawIxBody(cur);const n=$('#ixQ');n.focus();try{n.setSelectionRange(pos,pos)}catch(e){}},250)};
   if($('#ixSt'))$('#ixSt').onchange=e=>{UI.ixStatus=e.target.value;drawIxBody(cur)};
   $('#ixSort').onchange=e=>{UI.ixSort=e.target.value;drawIxBody(cur)};
+  body.querySelectorAll('[data-rg]').forEach(b=>b.onclick=()=>{UI.ixRegion=b.dataset.rg;killMaps();drawIxBody(cur)});
   body.querySelectorAll('[data-it]').forEach(b=>b.onclick=()=>openItem(cur.id,b.dataset.it));
-  if($('#ixMap')){killMaps();loadLeaflet().then(()=>{const el=$('#ixMap');if(!el)return;const pts=[];list.forEach(it=>(it.places||[]).forEach(p=>pts.push({...p,icon:cur.icon||'📍',popup:`<b>${esc(it.title||p.name)}</b><br>${esc(p.name)}${it.date?'<br>'+kShort(it.date):''}<br><a href="#" data-pop="${it.id}">기록 보기</a>`})));
-    const m=newMap(el,pts);m.map.on('popupopen',ev=>{const a=ev.popup.getElement().querySelector('[data-pop]');if(a)a.onclick=e=>{e.preventDefault();openItem(cur.id,a.dataset.pop)}});
-    if(!pts.length)el.insertAdjacentHTML('beforeend','<div class="ixmapempty">기록에 장소를 넣으면 지도에 표시돼요</div>')}).catch(()=>{const el=$('#ixMap');if(el)el.innerHTML='<div class="empty">지도를 불러오지 못했어요.</div>'})}
+  if($('#ixMap')){killMaps();loadMapLib().then(()=>{const el=$('#ixMap');if(!el)return;const pts=[];list.forEach(it=>(it.places||[]).forEach(p=>pts.push({...p,icon:cur.icon||'📍',popup:`<b>${esc(it.title||p.name)}</b><br>${esc(p.name)}${it.date?'<br>'+kShort(it.date):''}<br><a href="#" data-pop="${it.id}">기록 보기</a>`})));
+    newMap(el,pts,{world:UI.ixRegion==='abroad'});if(!pts.length)el.insertAdjacentHTML('beforeend','<div class="ixmapempty">기록에 장소를 넣으면 지도에 표시돼요</div>')}).catch(()=>{const el=$('#ixMap');if(el)el.innerHTML='<div class="empty">지도를 불러오지 못했어요.</div>'})}
 }
 function ixCard(it,cur){const T=IX_TYPES[cur.type]||IX_TYPES.custom;const img=(it.photos&&it.photos[0])||(it.ext&&it.ext.cover)||'';const st=T.statuses&&it.status?((T.statuses.find(s=>s[0]===it.status)||[])[1]||''):'';
-  const where=(it.places||[]).map(p=>p.name).slice(0,3).join(', ');
-  return `<button class="ixcard" data-it="${it.id}">${img?`<img src="${esc(img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:`<span class="ixnoimg">${esc(cur.icon||'⭐')}</span>`}<span class="ixmeta"><b>${esc(it.title||'(제목 없음)')}</b>${it.sub||where?`<small>${esc(it.sub||where)}</small>`:''}${it.rating?starsHTML(it.rating):''}${it.oneLine?`<i>${esc(it.oneLine)}</i>`:''}<small>${[st,it.date?kShort(it.date)+(it.date2&&it.date2!==it.date?' – '+kShort(it.date2):''):''].filter(Boolean).join(' · ')}</small></span></button>`}
+  const where=(it.places||[]).map(p=>p.name).slice(0,3).join(', ');const nl=(it.logs||[]).length;
+  return `<button class="ixcard" data-it="${it.id}">${img?`<img src="${esc(img)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:`<span class="ixnoimg">${esc(cur.icon||'⭐')}</span>`}<span class="ixmeta"><b>${cur.type==='travel'?(itemRegion(it)==='abroad'?'🌏 ':'🇰🇷 '):''}${esc(it.title||'(제목 없음)')}</b>${it.sub||where?`<small>${esc(it.sub||where)}</small>`:''}${it.rating?starsHTML(it.rating):''}${it.oneLine?`<i>${esc(it.oneLine)}</i>`:''}<small>${[st,it.date?kShort(it.date)+(it.date2&&it.date2!==it.date?' – '+kShort(it.date2):''):'',nl?`📝 ${nl}`:''].filter(Boolean).join(' · ')}</small></span></button>`}
 function openItem(iid,id,preset){
-  const cur=ixList().find(x=>x.id===iid);if(!cur)return;const T=IX_TYPES[cur.type]||IX_TYPES.custom;const ex=id?ITEMS[id]:null;
-  const f=ex?clone(ex):Object.assign({id:'x'+uid(),iid,title:'',sub:'',status:T.statuses?'done':'',date:todayKey(),date2:'',rating:0,oneLine:'',review:'',tags:[],photos:[],ext:null,places:[],createdAt:Date.now()},preset||{});
-  const isMedia=cur.type==='book'||cur.type==='screen',isMap=cur.type==='travel'||cur.map;
-  const box=openModal(`<h3>${esc(cur.icon||'')} ${esc(cur.name)} ${ex?'기록 고치기':'새 기록'}</h3>
+  const cur=ixList().find(x=>x.id===iid);if(!cur)return;if(cur.type==='exercise')return openExercise(iid,id,preset);
+  const T=IX_TYPES[cur.type]||IX_TYPES.custom;const ex=id?ITEMS[id]:null;
+  const f=ex?clone(ex):Object.assign({id:'x'+uid(),iid,title:'',sub:'',status:T.statuses?'doing':'',date:todayKey(),date2:'',rating:0,oneLine:'',review:'',tags:[],photos:[],ext:null,places:[],logs:[],createdAt:Date.now()},preset||{});
+  f.logs=f.logs||[];
+  const isMedia=cur.type==='book'||cur.type==='screen',isMap=cur.type==='travel';
+  const box=openModal(`<h3>${esc(cur.icon||'')} ${esc(cur.name)} ${ex?'기록':'새 기록'}</h3>
     ${isMedia?`<div class="field"><span>${cur.type==='book'?'책 찾기 <small>제목이나 지은이로 검색하면 표지와 기본 정보가 채워져요</small>':'영화·드라마 찾기 <small>제목으로 검색하면 포스터와 기본 정보가 채워져요</small>'}</span><div class="addrow" style="margin:0"><input id="ixSq" placeholder="${cur.type==='book'?'예: 아몬드, 손원평':'예: 기생충, 오징어 게임'}"><button class="ghost" id="ixSgo">검색</button></div><div id="ixRes" class="ixres"></div><p class="phmsg" id="ixSmsg"></p></div>`:''}
     <div id="ixExt"></div>
-    ${isMap?`<div class="field"><span>다녀온 곳 <small>장소를 검색하거나 지도를 눌러 핀을 꽂으세요</small></span><div class="addrow" style="margin:0"><input id="plQ" placeholder="예: 경주 불국사, 제주 성산일출봉"><button class="ghost" id="plGo">찾기</button></div><div id="plRes" class="ixres"></div><div id="plMap" class="ixmap sm"></div><ul id="plList" class="pllist"></ul></div>`:''}
+    ${isMap?`<div class="field"><span>국내 · 해외</span><div class="chips" id="itRg"><button type="button" class="pchip" data-rg="domestic">🇰🇷 국내</button><button type="button" class="pchip" data-rg="abroad">🌏 해외</button></div></div>
+      <div class="field"><span>다녀온 곳 <small>장소를 검색하거나 지도를 눌러 핀을 꽂으세요</small></span><div class="addrow" style="margin:0"><input id="plQ" placeholder="예: 경주 불국사, 파리 에펠탑"><button class="ghost" id="plGo">찾기</button></div><div id="plRes" class="ixres"></div><div id="plMap" class="ixmap sm"></div><ul id="plList" class="pllist"></ul></div>`:''}
     <label class="field"><span>제목</span><input id="itTitle" maxlength="120"></label>
     <label class="field"><span>${T.subL}</span><input id="itSub" maxlength="120"></label>
     ${T.statuses?`<div class="field"><span>상태</span><div class="chips" id="itSt">${T.statuses.map(([v,l])=>`<button type="button" class="pchip" data-s="${v}">${l}</button>`).join('')}</div></div>`:''}
-    <div class="trow"><label class="field" style="flex:1"><span>${T.dateL}</span><input type="date" id="itDate"></label><label class="field" style="flex:1"><span>${cur.type==='travel'?'돌아온 날':'끝난 날 (선택)'}</span><input type="date" id="itDate2"></label></div>
+    <div class="trow"><label class="field" style="flex:1"><span>${T.dateL}</span><input type="date" id="itDate"></label><label class="field" style="flex:1"><span>${cur.type==='travel'?'돌아온 날':'끝낸 날 (선택)'}</span><input type="date" id="itDate2"></label></div>
     <div class="field"><span>내 별점 <b id="itRateV"></b></span><div class="rate5" id="itRate" tabindex="0" role="slider" aria-label="내 별점" aria-valuemin="0" aria-valuemax="5"><span class="stars big"><span id="itRateFill">★★★★★</span>★★★★★</span></div></div>
     <label class="field"><span>한 줄 평</span><input id="itOne" maxlength="80" placeholder="한 문장으로 남겨 보세요"></label>
-    <label class="field"><span>${cur.type==='travel'?'여행 일기':'리뷰'}</span><textarea id="itRev" rows="6"></textarea></label>
+    <section class="logbox"><div class="loghead"><b>📝 ${T.logL}</b><small>${T.logHint}</small></div>
+      <div class="logadd"><div class="trow"><input type="date" id="lgDate" aria-label="날짜">${cur.type==='book'?'<input type="number" id="lgPage" min="0" placeholder="쪽" aria-label="읽은 쪽" style="width:90px">':cur.type==='screen'?'<input id="lgPage" placeholder="회차 (예: S1 E3)" aria-label="회차" style="width:140px">':''}</div>
+        <textarea id="lgText" rows="2" placeholder="${cur.type==='book'?'오늘 읽고 느낀 점':cur.type==='screen'?'오늘 본 감상':cur.type==='travel'?'오늘 있었던 일':'이어서 남길 내용'}"></textarea>
+        ${cur.type==='book'||cur.type==='screen'?`<textarea id="lgQuote" rows="2" class="hand" placeholder="${cur.type==='book'?'마음에 남은 글귀 (선택)':'기억에 남는 대사 (선택)'}"></textarea>`:''}
+        <button type="button" class="ghost" id="lgAdd">＋ ${T.logL}에 추가</button></div>
+      <ul class="loglist" id="lgList"></ul></section>
+    <label class="field"><span>${cur.type==='travel'?'여행 총평':'종합 리뷰'}</span><textarea id="itRev" rows="4"></textarea></label>
     <label class="field"><span>태그 <small>쉼표로 구분</small></span><input id="itTags" placeholder="예: 가족, 재독, 인생작"></label>
-    <div class="field"><span>사진 <small>최대 4장</small></span><div class="phstrip" id="itPh"></div><p class="phmsg" id="itPhMsg"></p></div>
+    <div class="field"><span>사진 <small>최대 4장</small></span><div class="phstrip" id="itPh"></div></div>
     <div class="mfoot">${ex?'<button class="ghost danger" id="itDel">삭제</button>':''}<span class="sp"></span><button class="ghost" data-x>취소</button><button class="primary" id="itSave">저장</button></div>`);
   box.classList.add('wide');
-  $('#itTitle').value=f.title||'';$('#itSub').value=f.sub||'';$('#itDate').value=f.date||'';$('#itDate2').value=f.date2||'';$('#itOne').value=f.oneLine||'';$('#itRev').value=f.review||'';$('#itTags').value=(f.tags||[]).join(', ');
+  $('#itTitle').value=f.title||'';$('#itSub').value=f.sub||'';$('#itDate').value=f.date||'';$('#itDate2').value=f.date2||'';$('#itOne').value=f.oneLine||'';$('#itRev').value=f.review||'';$('#itTags').value=(f.tags||[]).join(', ');$('#lgDate').value=todayKey();
   const drawSt=()=>box.querySelectorAll('#itSt [data-s]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.s===f.status));drawSt();
   box.querySelectorAll('#itSt [data-s]').forEach(b=>b.onclick=()=>{f.status=b.dataset.s;drawSt()});
+  const drawRg=()=>box.querySelectorAll('#itRg [data-rg]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rg===itemRegion(f)));drawRg();
+  box.querySelectorAll('#itRg [data-rg]').forEach(b=>b.onclick=()=>{f.region=b.dataset.rg;drawRg()});
   const drawRate=()=>{$('#itRateFill').style.width=(f.rating/5*100)+'%';$('#itRateV').textContent=f.rating?f.rating+'점':'아직 없음';$('#itRate').setAttribute('aria-valuenow',f.rating)};drawRate();
   const rateEl=$('#itRate');rateEl.onclick=e=>{const r=rateEl.querySelector('.stars').getBoundingClientRect();let v=Math.ceil(((e.clientX-r.left)/r.width)*10)/2;v=Math.max(.5,Math.min(5,v));f.rating=f.rating===v?0:v;drawRate()};
   rateEl.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowUp'){f.rating=Math.min(5,f.rating+.5);drawRate();e.preventDefault()}if(e.key==='ArrowLeft'||e.key==='ArrowDown'){f.rating=Math.max(0,f.rating-.5);drawRate();e.preventDefault()}};
-  const drawExt=()=>{$('#ixExt').innerHTML=f.ext?extCardHTML(f.ext,cur.type)+'<button class="linkbtn" id="ixExtX" style="margin:-4px 0 8px">검색 정보 빼기</button>':'';const x=$('#ixExtX');if(x)x.onclick=()=>{f.ext=null;drawExt()}};drawExt();
+  const drawExt=()=>{$('#ixExt').innerHTML=f.ext?extCardHTML(f.ext)+'<button class="linkbtn" id="ixExtX" style="margin:-4px 0 8px">검색 정보 빼기</button>':'';const x=$('#ixExtX');if(x)x.onclick=()=>{f.ext=null;drawExt()}};drawExt();
+  const drawLogs=()=>{const L=[...f.logs].sort((a,b)=>String(b.date).localeCompare(String(a.date))||(b.at||0)-(a.at||0));
+    $('#lgList').innerHTML=L.length?L.map(l=>`<li><div class="lgh"><b>${kShort(l.date)}</b>${l.page?`<span class="pill">${cur.type==='book'?l.page+'쪽':esc(l.page)}</span>`:''}<button type="button" class="x" data-lx="${l.id}" aria-label="지우기">×</button></div>${l.quote?`<blockquote class="hand">${esc(l.quote)}</blockquote>`:''}${l.text?`<p>${esc(l.text)}</p>`:''}</li>`).join(''):'<li class="hint">아직 쌓인 기록이 없어요. 읽거나 볼 때마다 짧게 남겨 보세요.</li>';
+    $('#lgList').querySelectorAll('[data-lx]').forEach(b=>b.onclick=()=>{if(!confirm('이 기록을 지울까요?'))return;f.logs=f.logs.filter(x=>x.id!==b.dataset.lx);drawLogs()})};drawLogs();
+  $('#lgAdd').onclick=()=>{const text=$('#lgText').value.trim(),quote=$('#lgQuote')?$('#lgQuote').value.trim():'';if(!text&&!quote){$('#lgText').focus();return}
+    f.logs.push({id:'l'+uid(),date:$('#lgDate').value||todayKey(),text,quote,page:$('#lgPage')?$('#lgPage').value.trim():'',at:Date.now()});$('#lgText').value='';if($('#lgQuote'))$('#lgQuote').value='';if($('#lgPage'))$('#lgPage').value='';drawLogs();toast('추가했어요. 저장을 눌러야 반영돼요')};
   if(isMedia){const go=async()=>{const q=$('#ixSq').value.trim();const msg=$('#ixSmsg');if(!q)return;msg.className='phmsg';msg.textContent='찾는 중…';$('#ixRes').innerHTML='';
       try{const res=cur.type==='book'?await searchBooks(q):await searchScreen(q);msg.textContent=res.length?'고르면 정보가 채워져요.':'찾는 결과가 없어요. 제목을 바꿔 보거나 직접 적어 주세요.';
         $('#ixRes').innerHTML=res.map((r,i)=>`<button type="button" class="ixr" data-r="${i}">${r.cover?`<img src="${esc(r.cover)}" alt="" referrerpolicy="no-referrer">`:'<span class="ixnoimg sm">?</span>'}<span><b>${esc(r.title)}</b><small>${esc([r.mediaType?(r.mediaType==='tv'?'드라마·TV':'영화'):'',r.sub,r.publisher,String(r.published||'').slice(0,4)].filter(Boolean).join(' · '))}</small></span></button>`).join('');
         $('#ixRes').querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{const r=res[+b.dataset.r];let ext={...r};if(r.src==='tmdb'){msg.textContent='자세한 정보를 가져오는 중…';Object.assign(ext,await tmdbDetail(r))}
-          f.ext=ext;$('#itTitle').value=ext.title||'';$('#itSub').value=cur.type==='book'?(ext.sub||''):[ext.director,ext.cast].filter(Boolean).join(' · ');$('#ixRes').innerHTML='';msg.textContent='정보를 채웠어요. 내 별점과 리뷰를 남겨 보세요.';drawExt()});
-      }catch(e){msg.className='phmsg err';msg.textContent=e&&e.code==='nokey'?'영화·드라마 검색 키가 아직 안 보여요. firebase-config.js의 tmdbKey를 확인하고, 화면을 새로고침(Ctrl+F5)해 주세요.':e&&e.code==='tmdb'?(e.status===401?'TMDB API 키가 맞지 않아요(401). "API 읽기 액세스 토큰"이 아니라 짧은 "API 키"를 넣었는지 확인해 주세요.':`TMDB 검색에 실패했어요(${e.status}). 잠시 뒤 다시 해 주세요.`):e&&e.code==='books'?(e.status===429?'Google 도서 무료 사용량이 다 찼어요(429). firebase-config.js에 googleBooksKey를 넣으면 해결돼요.':e.status===403?'Google 도서 API 키 설정을 확인해 주세요(403). Books API 사용 설정과 키 제한을 확인해야 해요.':`책 검색에 실패했어요(${e.status||'연결 안 됨'}). 잠시 뒤 다시 해 보거나 직접 적어 주세요.`):'검색하지 못했어요. 잠시 뒤 다시 해 보거나 직접 적어 주세요.'}};
+          f.ext=ext;$('#itTitle').value=ext.title||'';$('#itSub').value=cur.type==='book'?(ext.sub||''):[ext.director,ext.cast].filter(Boolean).join(' · ');$('#ixRes').innerHTML='';msg.textContent='정보를 채웠어요. 내 별점과 기록을 남겨 보세요.';drawExt()});
+      }catch(e){msg.className='phmsg err';msg.textContent=searchErrMsg(e)}};
     $('#ixSgo').onclick=go;$('#ixSq').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();go()}}}
   let pm=null;
   if(isMap){const drawPl=()=>{$('#plList').innerHTML=(f.places||[]).map((p,i)=>`<li><span class="pln">${i+1}</span><input value="${esc(p.name)}" data-pn="${i}" aria-label="장소 이름"><button type="button" class="x" data-px="${i}" aria-label="빼기">×</button></li>`).join('')||'<li class="hint">아직 장소가 없어요.</li>';
       $('#plList').querySelectorAll('[data-pn]').forEach(inp=>inp.oninput=()=>{f.places[+inp.dataset.pn].name=inp.value});
       $('#plList').querySelectorAll('[data-px]').forEach(b=>b.onclick=()=>{f.places.splice(+b.dataset.px,1);drawPl()});if(pm)pm.draw(f.places)};
-    const addPlace=p=>{f.places=f.places||[];f.places.push({name:p.name,lat:p.lat,lng:p.lng});if(!$('#itSub').value)$('#itSub').value=p.name;drawPl()};
-    loadLeaflet().then(()=>{pm=newMap($('#plMap'),f.places,{num:true});pm.map.on('click',async ev=>{const nm=await geoReverse(ev.latlng.lat,ev.latlng.lng);addPlace({name:nm,lat:ev.latlng.lat,lng:ev.latlng.lng})});drawPl()}).catch(()=>{$('#plMap').innerHTML='<div class="empty">지도를 불러오지 못했어요.</div>';drawPl()});
+    const addPlace=p=>{f.places=f.places||[];f.places.push({name:p.name,lat:p.lat,lng:p.lng,cc:p.cc||''});if(!f.region&&p.cc)f.region=p.cc==='kr'?'domestic':'abroad';drawRg();if(!$('#itSub').value)$('#itSub').value=p.name;drawPl()};
+    loadMapLib().then(()=>{pm=newMap($('#plMap'),f.places,{num:true,world:itemRegion(f)==='abroad'&&!(f.places||[]).length});pm.onClick(async(lat,lng)=>{const g=await geoReverse(lat,lng);addPlace({name:g.name,lat,lng,cc:g.cc})});drawPl()}).catch(()=>{$('#plMap').innerHTML='<div class="empty">지도를 불러오지 못했어요.</div>';drawPl()});
     const pgo=async()=>{const q=$('#plQ').value.trim();if(!q)return;$('#plRes').innerHTML='<p class="phmsg">찾는 중…</p>';try{const res=await geoSearch(q);$('#plRes').innerHTML=res.length?res.map((r,i)=>`<button type="button" class="ixr" data-g="${i}"><span class="ixnoimg sm">📍</span><span><b>${esc(r.name)}</b><small>${esc(r.full)}</small></span></button>`).join(''):'<p class="phmsg">찾는 장소가 없어요. 지도를 직접 눌러 보세요.</p>';
       $('#plRes').querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{addPlace(res[+b.dataset.g]);$('#plRes').innerHTML='';$('#plQ').value=''})}catch(e){$('#plRes').innerHTML='<p class="phmsg err">장소를 찾지 못했어요. 지도를 직접 눌러 보세요.</p>'}};
     $('#plGo').onclick=pgo;$('#plQ').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();pgo()}}}
-  const drawPh=()=>{$('#itPh').innerHTML=(f.photos||[]).map((p,i)=>`<div class="phitem"><img src="${p}" alt="첨부 사진"><button type="button" class="rm" data-pr="${i}" aria-label="사진 빼기">×</button></div>`).join('')+((f.photos||[]).length<4?`<button type="button" class="phadd" id="itAddPh">＋<br>사진 추가</button>`:'');
-    $('#itPh').querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{f.photos.splice(+b.dataset.pr,1);drawPh()});
-    const a=$('#itAddPh');if(a)a.onclick=()=>{if(AUTH.demo){toast('체험 계정에서는 사진을 올릴 수 없어요');return}const inp=$('#photoInput');inp.value='';inp.onchange=async()=>{for(const file of [...inp.files].slice(0,4-(f.photos||[]).length)){try{const im=await loadImg(file);f.photos.push(dataUrlUnder(im,1100,170000))}catch(e){$('#itPhMsg').textContent='사진을 읽지 못했어요.'}}drawPh()};inp.click()}};
+  const drawPh=()=>{$('#itPh').innerHTML=(f.photos||[]).map((p,i)=>`<div class="phitem"><img src="${p}" alt="첨부 사진"><button type="button" class="rm" data-iph="${i}" aria-label="사진 빼기">×</button></div>`).join('')+((f.photos||[]).length<4?`<button type="button" class="phadd" id="itAddPh">＋<br>사진 추가</button>`:'');
+    $('#itPh').querySelectorAll('[data-iph]').forEach(b=>b.onclick=()=>{f.photos.splice(+b.dataset.iph,1);drawPh()});
+    const a=$('#itAddPh');if(a)a.onclick=()=>pickPhotos(f,4,drawPh)};
   drawPh();
   onModalClose=()=>{killMaps();if(UI.view==='interest')renderInterest();else if(UI.view==='day')drawDayIx()};
-  if($('#itDel'))$('#itDel').onclick=async()=>{if(!confirm('이 기록을 지울까요?'))return;await dropItem(f.id);closeModal();toast('지웠어요')};
-  $('#itSave').onclick=async()=>{f.title=$('#itTitle').value.trim();f.sub=$('#itSub').value.trim();f.date=$('#itDate').value;f.date2=$('#itDate2').value;f.oneLine=$('#itOne').value.trim();f.review=$('#itRev').value;f.tags=$('#itTags').value.split(',').map(x=>x.trim()).filter(Boolean);
+  if($('#itDel'))$('#itDel').onclick=async()=>{if(!confirm('이 기록을 지울까요? 쌓인 노트도 함께 지워져요.'))return;await dropItem(f.id);closeModal();toast('지웠어요')};
+  $('#itSave').onclick=async()=>{const lt=$('#lgText').value.trim(),lq=$('#lgQuote')?$('#lgQuote').value.trim():'';if(lt||lq)$('#lgAdd').click();
+    f.title=$('#itTitle').value.trim();f.sub=$('#itSub').value.trim();f.date=$('#itDate').value;f.date2=$('#itDate2').value;f.oneLine=$('#itOne').value.trim();f.review=$('#itRev').value;f.tags=$('#itTags').value.split(',').map(x=>x.trim()).filter(Boolean);
+    if(isMap&&!f.region)f.region=itemRegion(f);
     if(!f.title&&f.places&&f.places[0])f.title=f.places[0].name;if(!f.title){$('#itTitle').focus();toast('제목을 적어 주세요');return}
     $('#itSave').disabled=true;const ok=await putItem(f);$('#itSave').disabled=false;if(ok){closeModal();toast('저장했어요')}};
 }
@@ -3125,11 +3279,13 @@ function openIxManage(){
 }
 function drawDayIx(){
   const el=$('#dayIx');if(!el)return;const k=dkey(UI.date);const list=ixList();
-  const its=Object.values(ITEMS).filter(it=>it.date===k||(it.date&&it.date2&&it.date<=k&&it.date2>=k));
-  el.innerHTML=`<div class="dayix"><b>관심사</b>${its.map(it=>{const c=list.find(x=>x.id===it.iid)||{icon:'⭐'};return `<button class="pchip" data-dit="${it.id}">${esc(c.icon||'⭐')} ${esc(it.title)}${it.rating?` ★${it.rating}`:''}</button>`}).join('')}<button class="pchip" id="dixAdd">＋ 오늘의 관심사 기록</button></div>`;
+  const its=Object.values(ITEMS).filter(it=>it.date===k||(it.date&&it.date2&&it.date<=k&&it.date2>=k)||(it.logs||[]).some(l=>l.date===k));
+  el.innerHTML=`<div class="dayix"><b>관심사</b>${its.map(it=>{const c=list.find(x=>x.id===it.iid)||{icon:'⭐'};const nl=(it.logs||[]).filter(l=>l.date===k).length;return `<button class="pchip" data-dit="${it.id}">${esc(c.icon||'⭐')} ${esc(it.title)}${it.rating?` ★${it.rating}`:''}${nl?` 📝${nl}`:''}</button>`}).join('')}<button class="pchip" id="dixAdd">＋ 오늘의 관심사 기록</button></div>`;
   el.querySelectorAll('[data-dit]').forEach(b=>b.onclick=()=>{const it=ITEMS[b.dataset.dit];if(it)openItem(it.iid,it.id)});
-  $('#dixAdd').onclick=()=>{const box=openModal(`<h3>어떤 관심사를 기록할까요?</h3><div class="ixnav col">${list.map(x=>`<button data-pk="${x.id}"><span class="ixi">${esc(x.icon||'⭐')}</span>${esc(x.name)}</button>`).join('')}</div><div class="mfoot"><span class="sp"></span><button class="ghost" data-x>닫기</button></div>`);
-    box.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{closeModal();openItem(b.dataset.pk,null,{date:k})})};
+  $('#dixAdd').onclick=()=>{const doing=Object.values(ITEMS).filter(it=>it.status==='doing').slice(0,6);
+    const box=openModal(`<h3>어떤 관심사를 기록할까요?</h3>${doing.length?`<p class="hint" style="margin:0">이어 쓰기 (읽는 중·보는 중)</p><div class="ixnav col">${doing.map(it=>{const c=list.find(x=>x.id===it.iid)||{};return `<button data-cont="${it.id}"><span class="ixi">${esc(c.icon||'⭐')}</span>${esc(it.title)} <small>📝 이어 쓰기</small></button>`}).join('')}</div><p class="hint" style="margin:6px 0 0">새로 기록하기</p>`:''}<div class="ixnav col">${list.map(x=>`<button data-pk="${x.id}"><span class="ixi">${esc(x.icon||'⭐')}</span>${esc(x.name)}</button>`).join('')}</div><div class="mfoot"><span class="sp"></span><button class="ghost" data-x>닫기</button></div>`);
+    box.querySelectorAll('[data-pk]').forEach(b=>b.onclick=()=>{closeModal();openItem(b.dataset.pk,null,{date:k})});
+    box.querySelectorAll('[data-cont]').forEach(b=>b.onclick=()=>{const it=ITEMS[b.dataset.cont];closeModal();openItem(it.iid,it.id);setTimeout(()=>{const d=$('#lgDate');if(d){d.value=k;$('#lgText').focus()}},80)})};
 }
 
 /* ---------- demo (test account) ---------- */
