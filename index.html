@@ -633,7 +633,7 @@ tr.rowwait td{background:color-mix(in srgb,#FFE14D 14%,transparent)}
 
 /* ---- Firebase build ---- */
 .field[hidden],label[hidden]{display:none !important}
-html.fb #prDrive,html.fb #gsE,html.fb #gsP,html.fb #gsMsg,html.fb [data-pr],html.fb #lgForgot{display:none !important}
+html.fb:not(.gd) #prDrive,html.fb:not(.gd) #gsE,html.fb:not(.gd) #gsP,html.fb:not(.gd) #gsMsg,html.fb [data-pr],html.fb #lgForgot{display:none !important}
 html.fb section:has(#shSync){display:none}
 /* ---- v10 DDD brand ---- */
 :root{--c-design:#2F6BFF;--c-do:#16A34A;--c-dev:#8B3FE0}
@@ -1125,7 +1125,7 @@ function payloadOf(r){
 }
 function driveErr(e){
   const c=e&&e.code;
-  if(window.DDD_FB&&(c==='capability_disabled'||!c))return 'Google Drive 연결은 아직 준비 중이에요.';
+  if(window.DDD_FB){if(c==='capability_disabled')return 'Google 연결 설정(clientId)이 아직 없어서 사진은 다이어리에만 저장돼요.';if(c==='needs_reauth')return 'Google Drive에 아직 연결하지 않았어요. 연결하면 바로 올라가요.';if(c==='tool_error')return 'Google Drive에 올리지 못했어요.'}
   return ({needs_reauth:'Google Drive 연결이 만료됐어요. claude.ai 설정 > 커넥터에서 다시 연결해 주세요.',
     server_not_connected:'Google Drive가 연결돼 있지 않아요. claude.ai 설정 > 커넥터에서 추가해 주세요.',
     selection_required:'사용할 Google Drive 연결을 골라 주세요.',
@@ -1156,6 +1156,7 @@ async function drivePhotos(mcp){
 function resetDriveFolders(){S.settings.drivePdsId='';S.settings.drivePdsUrl='';S.settings.drivePhotoId='';touch('settings')}
 async function ensureFileArgs(mcp){if(FILEARGS===null){try{const lt=await mcp.listTools();FILEARGS=!!(lt&&lt.fileArgs)}catch(e){FILEARGS=false}}}
 async function driveUpload({title,blob,text,mime,folder,keep}){
+  if(window.DDD_FB)return gdDriveUpload({title,blob,text,mime,folder,keep});
   const mcp=await getMcp();if(!mcp)throw {code:'capability_disabled'};
   await ensureFileArgs(mcp);
   const parentId=folder==='photos'?await drivePhotos(mcp):await drivePds(mcp);
@@ -1190,21 +1191,22 @@ async function addPhotoFile(file,ctx,onStatus){
     p.driveId=d.id;p.driveUrl=d.url;
     await putPhoto(p);onStatus&&onStatus(p,'ok');
   }catch(e){
-    p.img=dataUrlUnder(im,1100,220000);p.driveErr=e&&e.code||'error';
+    p.img=dataUrlUnder(im,1100,220000);p.driveErr=e&&e.code||'error';if(window.DDD_FB&&p.driveErr==='needs_reauth'&&GCFG().clientId)setTimeout(()=>toast('사진은 다이어리에 저장했어요. Google Drive에도 올릴까요?','연결하기',gdConnectAndFlush),400);
     await putPhoto(p);onStatus&&onStatus(p,'local',driveErr(e));
   }
   return p;
 }
-async function retryDrive(p){
+async function retryDrive(p,quiet){
   const src=p.img||p.thumb;if(!src)return;
   try{const title=`${p.date} ${hm(p.s||0).replace(':','')} ${(p.text||cat(p.cat).name).replace(/[\\/:*?"<>|]/g,' ').slice(0,40)}.jpg`;
     const d=await uploadToDrive(dataUrlToBlob(src),title);
-    const np={...p,driveId:d.id,driveUrl:d.url,img:'',driveErr:''};await putPhoto(np);toast('Google Drive에 올렸어요');return np}
-  catch(e){toast(driveErr(e));return null}
+    const np={...p,driveId:d.id,driveUrl:d.url,img:'',driveErr:''};await putPhoto(np);if(!quiet)toast('Google Drive에 올렸어요');return np}
+  catch(e){if(window.DDD_FB&&e&&e.code==='needs_reauth'&&!quiet){toast('Google Drive에 연결해야 올릴 수 있어요.','연결하기',gdConnectAndFlush);return null}if(!quiet)toast(driveErr(e));return null}
 }
 async function deletePhoto(p,alsoDrive){
   await dropPhoto(p.id);
   for(const w of Object.values(S.weeks))for(const [k,d] of Object.entries(w.days||{}))for(const e of d.entries||[])if(e.photos&&e.photos.includes(p.id)){e.photos=e.photos.filter(x=>x!==p.id);touch(wkOf(k))}
+  if(alsoDrive&&p.driveId&&window.DDD_FB){if(!(gdToken()&&await gdTrash(p.driveId)))toast('사진은 지웠어요. Google Drive 원본은 Drive에서 직접 지워 주세요.');return}
   if(alsoDrive&&p.driveId){const mcp=await getMcp();if(mcp){try{await mcp.callTool(DRIVE,'trash_file',{fileId:p.driveId})}catch(e){toast('사진은 지웠지만 Google Drive 파일은 휴지통으로 옮기지 못했어요.')}}}
 }
 const photoSrc=p=>p.img||p.thumb;
@@ -1795,7 +1797,7 @@ function setView(body){
   $('#startH').onchange=e=>{S.settings.startHour=+e.target.value;touch('settings')};
 }
 function setData(body){
-  body.innerHTML=`${window.DDD_FB?'':`<section class="sheet"><h2>사진 저장</h2>
+  body.innerHTML=`${window.DDD_FB?gdSettingsHTML():`<section class="sheet"><h2>사진 저장</h2>
     <p>Google Drive에 <b>DDD Diary</b> 폴더를 만들어 그 안에 저장해요. 사진 원본은 <b>DDD Diary &gt; 사진</b>, 구글 시트와 PDF는 <b>DDD Diary</b> 폴더에 들어가요. 사진첩에는 작은 미리보기가 함께 보관돼요.</p>
     <p class="hint">${S.settings.drivePdsUrl?`<a href="${esc(S.settings.drivePdsUrl)}" target="_blank" rel="noopener">Google Drive DDD Diary 폴더 열기</a>`:'처음 저장할 때 폴더가 만들어져요.'} Google Drive 연결은 claude.ai 설정 &gt; 커넥터에서 관리해요.</p>
    </section>`}
@@ -1818,7 +1820,7 @@ function setData(body){
   $('#gsP').onclick=e=>toSheet(e.target,`DDD 계획체크 ${todayKey()}`,csvPlans());
   $('#jsonB').onclick=()=>save(`pds-backup-${todayKey()}.json`,JSON.stringify(S,null,1),'application/json');
   $('#jsonR').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const o=normalize(JSON.parse(await f.text()));if(!confirm('백업 내용으로 지금 데이터를 덮어쓸까요?'))return;S=o;touch('settings');[...Object.keys(S.weeks),...Object.keys(S.months),...Object.keys(S.years)].forEach(touch);toast('백업을 불러왔어요');render()}catch(err){toast('백업 파일을 읽지 못했어요. JSON 파일인지 확인해 주세요.')}};
-  getDownloads().then(dl=>{if(!dl){$('#dlNote').hidden=false;['csvE','csvP','jsonB'].forEach(id=>{const b=$('#'+id);if(b)b.disabled=true})}});
+  bindGdSettings();getDownloads().then(dl=>{if(!dl){$('#dlNote').hidden=false;['csvE','csvP','jsonB'].forEach(id=>{const b=$('#'+id);if(b)b.disabled=true})}});
 }
 const csvQ=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
 function allDaysSorted(){const out=[];for(const w of Object.values(S.weeks))for(const [k,d] of Object.entries(w.days||{}))out.push([k,d]);return out.sort((a,b)=>a[0]<b[0]?-1:1)}
@@ -3308,6 +3310,73 @@ function drawDemos(){const el=$('#dmList');if(!el)return;const c=$('#dmCount');i
   el.querySelectorAll('[data-dm]').forEach(b=>b.onclick=async()=>{if(!confirm('이 체험 기록을 지울까요?'))return;b.disabled=true;await purgeDemo(b.dataset.dm);toast('지웠어요')})}
 
 const brushCat=()=>UI.brush.cat||(S.settings.cats[0]||{}).id;
+/* ---------- Google Drive / Google Photos (GitHub+Firebase 판: 브라우저에서 직접 연결) ---------- */
+const GCFG=()=>window.DDD_GOOGLE||{};
+if(window.DDD_FB&&GCFG().clientId)document.documentElement.classList.add('gd');
+const GD={token:null,exp:0,client:null,scopeKey:''};
+const GD_SCOPE=()=>'https://www.googleapis.com/auth/drive.file'+(gpEnabled()?' https://www.googleapis.com/auth/photoslibrary.appendonly':'');
+const gpEnabled=()=>!!(GCFG().photos&&S.settings.gpOn!==false);
+const gdToken=()=>GD.token&&Date.now()<GD.exp?GD.token:null;
+function gdConnect(){
+  if(!GCFG().clientId)return Promise.reject({code:'capability_disabled'});
+  return loadScript('https://accounts.google.com/gsi/client').then(()=>new Promise((res,rej)=>{
+    const sc=GD_SCOPE();
+    if(!GD.client||GD.scopeKey!==sc){GD.client=google.accounts.oauth2.initTokenClient({client_id:GCFG().clientId,scope:sc,callback:()=>{}});GD.scopeKey=sc}
+    GD.client.callback=r=>{if(r&&r.error){rej({code:'needs_reauth',detail:r.error});return}GD.token=r.access_token;GD.exp=Date.now()+((+r.expires_in||3600)-60)*1000;
+      GD.photosOk=google.accounts.oauth2.hasGrantedAllScopes(r,'https://www.googleapis.com/auth/photoslibrary.appendonly');
+      if(!S.settings.gdConnected){S.settings.gdConnected=true;touch('settings')}res(GD.token)};
+    GD.client.error_callback=e=>rej({code:'needs_reauth',detail:e&&e.type});
+    GD.client.requestAccessToken({prompt:S.settings.gdConnected?'':'consent'});
+  }));
+}
+async function gdFetch(url,opts,raw){const t=gdToken();if(!t)throw {code:'needs_reauth'};opts=opts||{};opts.headers=Object.assign({Authorization:'Bearer '+t},opts.headers||{});
+  const r=await fetch(url,opts);if(r.status===401){GD.token=null;throw {code:'needs_reauth'}}if(!r.ok)throw {code:'tool_error',status:r.status};return raw?r.text():r.json()}
+async function gdFolder(name,parent){const q=`name='${name.replace(/'/g,"\\'")}' and mimeType='application/vnd.google-apps.folder' and trashed=false and '${parent||'root'}' in parents`;
+  const j=await gdFetch('https://www.googleapis.com/drive/v3/files?fields=files(id,webViewLink)&q='+encodeURIComponent(q));if(j.files&&j.files[0])return j.files[0];
+  return gdFetch('https://www.googleapis.com/drive/v3/files?fields=id,webViewLink',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(parent?{name,mimeType:'application/vnd.google-apps.folder',parents:[parent]}:{name,mimeType:'application/vnd.google-apps.folder'})})}
+async function gdFolders(){
+  if(!S.settings.gdRootId){const f=await gdFolder('DDD Diary',null);S.settings.gdRootId=f.id;S.settings.gdRootUrl=f.webViewLink||'';touch('settings')}
+  if(!S.settings.gdPhotoId){const f=await gdFolder('사진',S.settings.gdRootId);S.settings.gdPhotoId=f.id;touch('settings')}
+  return {root:S.settings.gdRootId,photo:S.settings.gdPhotoId}}
+async function gpUpload(blob,name){
+  const t=gdToken();if(!t||!GD.photosOk)return null;
+  const up=await fetch('https://photoslibrary.googleapis.com/v1/uploads',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-type':'application/octet-stream','X-Goog-Upload-Content-Type':blob.type||'image/jpeg','X-Goog-Upload-Protocol':'raw'},body:blob});
+  if(!up.ok)throw {code:'photos',status:up.status};const tok=await up.text();
+  if(!S.settings.gpAlbumId){const a=await fetch('https://photoslibrary.googleapis.com/v1/albums',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({album:{title:'DDD Diary'}})});if(!a.ok)throw {code:'photos',status:a.status};const aj=await a.json();S.settings.gpAlbumId=aj.id;S.settings.gpAlbumUrl=aj.productUrl||'';touch('settings')}
+  const b=await fetch('https://photoslibrary.googleapis.com/v1/mediaItems:batchCreate',{method:'POST',headers:{Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({albumId:S.settings.gpAlbumId,newMediaItems:[{description:name,simpleMediaItem:{uploadToken:tok,fileName:name}}]})});
+  if(!b.ok){if(b.status===400||b.status===404){S.settings.gpAlbumId='';touch('settings')}throw {code:'photos',status:b.status}}return true}
+let gpWarned=false;
+async function gdDriveUpload({title,blob,text,mime,folder,keep}){
+  if(!GCFG().clientId)throw {code:'capability_disabled'};if(!gdToken())throw {code:'needs_reauth'};
+  let F;try{F=await gdFolders()}catch(e){if(e&&e.status===404){S.settings.gdRootId='';S.settings.gdPhotoId='';touch('settings');F=await gdFolders()}else throw e}
+  const parent=folder==='photos'?F.photo:F.root;
+  const meta={name:title,parents:[parent]};if(text!=null&&!keep&&mime==='text/csv')meta.mimeType='application/vnd.google-apps.spreadsheet';
+  const fd=new FormData();fd.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));fd.append('file',text!=null?new Blob([text],{type:mime}):blob);
+  let f;try{f=await gdFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink',{method:'POST',body:fd})}
+  catch(e){if(e&&e.status===404){S.settings.gdRootId='';S.settings.gdPhotoId='';touch('settings')}throw e}
+  if(folder==='photos'&&gpEnabled()&&blob){gpUpload(blob,title).catch(()=>{if(!gpWarned){gpWarned=true;toast('Google 포토에는 올리지 못했어요. Google Drive에는 저장됐어요.')}})}
+  return {id:f.id,url:f.webViewLink||''};
+}
+async function gdTrash(id){try{await gdFetch(`https://www.googleapis.com/drive/v3/files/${id}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({trashed:true})});return true}catch(e){return false}}
+const gdPending=()=>Object.values(PHOTOS).filter(p=>!p.driveId&&(p.img||p.thumb));
+async function gdConnectAndFlush(){
+  try{await gdConnect()}catch(e){toast(e&&e.code==='capability_disabled'?'관리자가 Google 연결 설정(clientId)을 먼저 넣어야 해요.':'Google 연결이 취소됐거나 실패했어요.');return false}
+  const list=gdPending();if(!list.length){toast('Google Drive에 연결했어요. 앞으로 사진이 바로 올라가요.');return true}
+  let ok=0;for(let i=0;i<list.length;i++){toast(`Google Drive에 올리는 중 (${i+1}/${list.length})`);const r=await retryDrive(list[i],true);if(r)ok++}
+  toast(`사진 ${ok}장을 Google Drive에 올렸어요.`);if(UI.view==='photos'||UI.view==='settings')render();return true;
+}
+function gdSettingsHTML(){
+  const on=!!gdToken(),n=gdPending().length,has=!!GCFG().clientId;
+  return `<section class="sheet"><h2>Google 드라이브 · 포토</h2>
+    ${has?`<p>사진 원본은 내 Google Drive의 <b>DDD Diary &gt; 사진</b> 폴더에${GCFG().photos?', 그리고 Google 포토의 <b>DDD Diary</b> 앨범에도':''} 저장돼요. 구글 시트와 PDF는 <b>DDD Diary</b> 폴더에 들어가요.</p>
+      <p><span class="status${on?' ok':''}"><i></i>${on?'지금 연결돼 있어요 (보안을 위해 약 1시간 뒤 다시 연결을 물어요)':'연결돼 있지 않아요'}</span></p>
+      <div class="btnrow"><button class="primary" id="gdGo">${on?'다시 연결하기':'Google 계정으로 연결하기'}</button>${n?`<button class="ghost" id="gdFlush">대기 중인 사진 ${n}장 올리기</button>`:''}${S.settings.gdRootUrl?`<a class="ghost" href="${esc(S.settings.gdRootUrl)}" target="_blank" rel="noopener" style="text-decoration:none">Drive 폴더 열기</a>`:''}${S.settings.gpAlbumUrl?`<a class="ghost" href="${esc(S.settings.gpAlbumUrl)}" target="_blank" rel="noopener" style="text-decoration:none">포토 앨범 열기</a>`:''}</div>
+      ${GCFG().photos?`<label class="agree" style="margin-top:10px"><input type="checkbox" class="chk" id="gpOn" ${S.settings.gpOn!==false?'checked':''}> <span>Google 포토 앨범에도 함께 올리기</span></label>`:''}
+      <p class="hint">연결되지 않은 동안 올린 사진은 다이어리에 먼저 저장되고, 연결하면 한꺼번에 올라가요.</p>`
+    :`<p class="hint">관리자가 firebase-config.js에 Google 연결 설정(clientId)을 넣으면, 사진을 내 Google Drive와 Google 포토에 바로 저장할 수 있어요. 지금은 사진이 다이어리 안에 저장돼요.</p>`}</section>`}
+function bindGdSettings(){const g=$('#gdGo');if(g)g.onclick=async()=>{await gdConnectAndFlush();renderSettings()};const f=$('#gdFlush');if(f)f.onclick=async()=>{await gdConnectAndFlush();renderSettings()};
+  const p=$('#gpOn');if(p)p.onchange=e=>{S.settings.gpOn=e.target.checked;touch('settings');GD.token=null}}
+
 /* ---------- toast ---------- */
 let toastT=null;
 function toast(msg,actLabel,act){const t=$('#toast');t.innerHTML=`<span>${esc(msg)}</span>${actLabel?`<button>${esc(actLabel)}</button>`:''}`;t.hidden=false;if(actLabel)t.querySelector('button').onclick=()=>{t.hidden=true;act()};clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,actLabel?7000:3000)}
