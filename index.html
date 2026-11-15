@@ -846,8 +846,8 @@ html,body{max-width:100%;overflow-x:hidden}
 <datalist id="tagList"></datalist>
 <input type="file" id="photoInput" accept="image/*" multiple hidden>
 
-<script src="firebase-config.js"></script>
-<script src="firebase-adapter.js"></script>
+<script>document.write('<script src="firebase-config.js?t='+Date.now()+'"><\/script>')</script>
+<script src="firebase-adapter.js?v=3"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
 <script>
 (function(){
@@ -2995,12 +2995,15 @@ async function geoReverse(lat,lng){try{const r=await fetch(`https://nominatim.op
 async function searchBooks(q){
   const kk=API().kakaoRestKey;
   if(kk){try{const r=await fetch('https://dapi.kakao.com/v3/search/book?size=12&query='+encodeURIComponent(q),{headers:{Authorization:'KakaoAK '+kk}});if(r.ok){const j=await r.json();return (j.documents||[]).map(d=>({src:'kakao',extId:d.isbn||d.url,title:d.title,sub:(d.authors||[]).join(', '),publisher:d.publisher||'',published:(d.datetime||'').slice(0,10),cover:d.thumbnail||'',description:(d.contents||'').slice(0,1200),isbn:d.isbn||'',link:d.url||''}))}}catch(e){}}
-  const gk=API().googleBooksKey;const r=await fetch('https://www.googleapis.com/books/v1/volumes?maxResults=12&printType=books&q='+encodeURIComponent(q)+(gk?'&key='+encodeURIComponent(gk):''));if(!r.ok)throw new Error('http '+r.status);const j=await r.json();
+  const gk=API().googleBooksKey;let r=null;try{r=await fetch('https://www.googleapis.com/books/v1/volumes?maxResults=12&printType=books&q='+encodeURIComponent(q)+(gk?'&key='+encodeURIComponent(gk):''))}catch(e){r=null}
+  if(!r||!r.ok){const st=r?r.status:0;const ol=await searchOpenLibrary(q).catch(()=>[]);if(ol.length)return ol;throw {code:'books',status:st}}const j=await r.json();
   return (j.items||[]).map(v=>{const i=v.volumeInfo||{};const img=((i.imageLinks&&(i.imageLinks.thumbnail||i.imageLinks.smallThumbnail))||'').replace(/^http:/,'https:');
     return {src:'google',extId:v.id,title:(i.title||'')+(i.subtitle?': '+i.subtitle:''),sub:(i.authors||[]).join(', '),publisher:i.publisher||'',published:i.publishedDate||'',cover:img,description:String(i.description||'').replace(/<[^>]+>/g,'').slice(0,1200),isbn:(i.industryIdentifiers||[]).map(x=>x.identifier).join(' '),pages:i.pageCount||0,genres:(i.categories||[]).join(', '),extRating:i.averageRating||null,extCount:i.ratingsCount||0,extScale:5,link:i.infoLink||''}})}
+async function searchOpenLibrary(q){const r=await fetch('https://openlibrary.org/search.json?limit=12&q='+encodeURIComponent(q));if(!r.ok)return [];const j=await r.json();
+  return (j.docs||[]).map(d=>({src:'openlibrary',extId:d.key,title:d.title||'',sub:(d.author_name||[]).join(', '),publisher:(d.publisher||[])[0]||'',published:String(d.first_publish_year||''),cover:d.cover_i?`https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg`:'',description:'',isbn:(d.isbn||[])[0]||'',link:'https://openlibrary.org'+d.key}))}
 async function searchScreen(q){
   const key=API().tmdbKey;if(!key)throw {code:'nokey'};
-  const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${encodeURIComponent(key)}&language=ko-KR&include_adult=false&query=${encodeURIComponent(q)}`);if(!r.ok)throw new Error('http '+r.status);const j=await r.json();
+  const r=await fetch(`https://api.themoviedb.org/3/search/multi?api_key=${encodeURIComponent(key)}&language=ko-KR&include_adult=false&query=${encodeURIComponent(q)}`);if(!r.ok)throw {code:'tmdb',status:r.status};const j=await r.json();
   return (j.results||[]).filter(x=>x.media_type==='movie'||x.media_type==='tv').slice(0,12).map(x=>({src:'tmdb',extId:x.media_type+':'+x.id,mediaType:x.media_type,title:x.title||x.name||'',original:x.original_title||x.original_name||'',published:x.release_date||x.first_air_date||'',cover:x.poster_path?'https://image.tmdb.org/t/p/w342'+x.poster_path:'',description:(x.overview||'').slice(0,1200),extRating:x.vote_average?Math.round(x.vote_average*10)/10:null,extCount:x.vote_count||0,extScale:10}))}
 async function tmdbDetail(ext){const key=API().tmdbKey;if(!key)return {};const [t,id]=String(ext.extId).split(':');
   try{const r=await fetch(`https://api.themoviedb.org/3/${t}/${id}?api_key=${encodeURIComponent(key)}&language=ko-KR&append_to_response=credits`);const j=await r.json();const cr=j.credits||{};
@@ -3083,7 +3086,7 @@ function openItem(iid,id,preset){
         $('#ixRes').innerHTML=res.map((r,i)=>`<button type="button" class="ixr" data-r="${i}">${r.cover?`<img src="${esc(r.cover)}" alt="" referrerpolicy="no-referrer">`:'<span class="ixnoimg sm">?</span>'}<span><b>${esc(r.title)}</b><small>${esc([r.mediaType?(r.mediaType==='tv'?'드라마·TV':'영화'):'',r.sub,r.publisher,String(r.published||'').slice(0,4)].filter(Boolean).join(' · '))}</small></span></button>`).join('');
         $('#ixRes').querySelectorAll('[data-r]').forEach(b=>b.onclick=async()=>{const r=res[+b.dataset.r];let ext={...r};if(r.src==='tmdb'){msg.textContent='자세한 정보를 가져오는 중…';Object.assign(ext,await tmdbDetail(r))}
           f.ext=ext;$('#itTitle').value=ext.title||'';$('#itSub').value=cur.type==='book'?(ext.sub||''):[ext.director,ext.cast].filter(Boolean).join(' · ');$('#ixRes').innerHTML='';msg.textContent='정보를 채웠어요. 내 별점과 리뷰를 남겨 보세요.';drawExt()});
-      }catch(e){msg.className='phmsg err';msg.textContent=e&&e.code==='nokey'?'영화·드라마 검색은 관리자가 TMDB API 키를 넣어야 쓸 수 있어요. 지금은 직접 적어 주세요.':'검색하지 못했어요. 잠시 뒤 다시 해 보거나 직접 적어 주세요.'}};
+      }catch(e){msg.className='phmsg err';msg.textContent=e&&e.code==='nokey'?'영화·드라마 검색 키가 아직 안 보여요. firebase-config.js의 tmdbKey를 확인하고, 화면을 새로고침(Ctrl+F5)해 주세요.':e&&e.code==='tmdb'?(e.status===401?'TMDB API 키가 맞지 않아요(401). "API 읽기 액세스 토큰"이 아니라 짧은 "API 키"를 넣었는지 확인해 주세요.':`TMDB 검색에 실패했어요(${e.status}). 잠시 뒤 다시 해 주세요.`):e&&e.code==='books'?(e.status===429?'Google 도서 무료 사용량이 다 찼어요(429). firebase-config.js에 googleBooksKey를 넣으면 해결돼요.':e.status===403?'Google 도서 API 키 설정을 확인해 주세요(403). Books API 사용 설정과 키 제한을 확인해야 해요.':`책 검색에 실패했어요(${e.status||'연결 안 됨'}). 잠시 뒤 다시 해 보거나 직접 적어 주세요.`):'검색하지 못했어요. 잠시 뒤 다시 해 보거나 직접 적어 주세요.'}};
     $('#ixSgo').onclick=go;$('#ixSq').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();go()}}}
   let pm=null;
   if(isMap){const drawPl=()=>{$('#plList').innerHTML=(f.places||[]).map((p,i)=>`<li><span class="pln">${i+1}</span><input value="${esc(p.name)}" data-pn="${i}" aria-label="장소 이름"><button type="button" class="x" data-px="${i}" aria-label="빼기">×</button></li>`).join('')||'<li class="hint">아직 장소가 없어요.</li>';
