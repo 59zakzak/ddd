@@ -825,6 +825,55 @@ html,body{max-width:100%;overflow-x:hidden}
 .exsp span{font-size:16px}
 @media (max-width:600px){.exsum{grid-template-columns:1fr}}
 
+/* ---- 루틴 · 걸음 ---- */
+.rtchip{display:flex;align-items:center;gap:6px;border:1px solid var(--line2);background:var(--sheet);border-radius:999px;padding:3px 10px 3px 6px;position:relative;cursor:pointer;color:var(--ink)}
+.rtchip[hidden]{display:none}
+.rtchip .rte{font-size:18px}.rtchip .rtt{display:flex;align-items:baseline;gap:2px}.rtchip .rtt b{font-size:15px;font-variant-numeric:tabular-nums}.rtchip .rtt small{font-size:11px;color:var(--muted)}
+.rtbar{display:block;height:4px;border-radius:2px;background:var(--bg);overflow:hidden;width:44px}.rtbar em{display:block;height:100%;background:linear-gradient(90deg,var(--c-design),var(--c-do),var(--c-dev))}
+.rtbar.big{width:100%;height:8px;margin:6px 0 2px}
+@media (max-width:600px){.rtchip .rtt small,.rtchip .rtbar{display:none}.rtchip{padding:3px 8px}}
+.ring{border:1px dashed var(--line2);border-radius:10px;padding:6px 8px;margin:4px 0 8px}
+.ringh{display:flex;justify-content:space-between;align-items:baseline;font-size:13px}.ringh small{color:var(--muted)}
+.ringc{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.ringc span{font-size:12px;border-radius:999px;padding:2px 9px;background:var(--bg);color:var(--muted)}
+.ringc span.on{background:color-mix(in srgb,var(--c-do) 18%,var(--sheet));color:var(--ink);font-weight:600}
+.ringc span small{display:block;font-weight:400;font-size:10.5px;color:var(--muted)}
+#rtCele{position:fixed;inset:0;z-index:80;background:rgba(10,14,22,.45);display:grid;place-items:center;padding:16px;overflow:hidden}
+#rtCele[hidden]{display:none}
+.cele-box{background:var(--sheet);border-radius:20px;padding:22px 26px;text-align:center;display:grid;gap:4px;justify-items:center;width:min(340px,100%);box-shadow:0 20px 60px rgba(0,0,0,.3);animation:pop .35s ease;position:relative;z-index:2}
+.cele-e{font-size:64px;line-height:1.1}.cele-t{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.04em}.cele-box b{font-size:21px}.cele-box p{margin:2px 0;color:var(--muted);font-size:13.5px}
+.cele-p{font-size:13px;background:var(--bg);border-radius:999px;padding:3px 12px;margin:6px 0 10px}
+.cele-many{font-size:30px;letter-spacing:4px}
+.cele-week{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:100%;margin:8px 0}.cele-week span{background:var(--bg);border-radius:10px;padding:6px;font-size:11.5px;color:var(--muted);display:grid}.cele-week b{font-size:17px;color:var(--ink)}
+@keyframes pop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+.confetti{position:absolute;inset:0;pointer-events:none}.confetti i{position:absolute;top:-10px;width:8px;height:14px;border-radius:2px;animation:fall 2.2s ease-in forwards;opacity:.9}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@media (prefers-reduced-motion:reduce){.cele-box,.confetti i{animation:none}.confetti{display:none}}
+.rtp{display:grid;gap:8px}
+.rtph{display:flex;gap:14px;align-items:center}.rtpe{font-size:56px}.rtph > div{display:grid;flex:1;min-width:0}.rtph b{font-size:30px;font-variant-numeric:tabular-nums}.rtph b small{font-size:14px;font-weight:500;margin-left:2px}.rtph span{font-size:13.5px}.rtph small{color:var(--muted);font-size:12px}
+.rtstats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.rtstats span{background:var(--bg);border-radius:10px;padding:6px 8px;display:grid;font-size:11.5px;color:var(--muted)}.rtstats b{font-size:17px;color:var(--ink)}
+@media (max-width:520px){.rtstats{grid-template-columns:repeat(2,1fr)}}
+.rtcat{margin:12px 0 6px;font-size:13px;color:var(--muted)}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:6px}
+.bdg{border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;gap:1px;justify-items:center;text-align:center;opacity:.45;filter:grayscale(1)}
+.bdg.on{opacity:1;filter:none;border-color:color-mix(in srgb,var(--c-dev) 40%,var(--line));background:color-mix(in srgb,var(--c-dev) 6%,var(--sheet))}
+.bdg > span{font-size:28px}.bdg b{font-size:12.5px}.bdg small{font-size:10.5px;color:var(--muted);line-height:1.3}.bdg em{font-style:normal;font-size:10.5px;color:var(--muted)}
+.lvlist{list-style:none;margin:0;padding:0;display:grid;gap:4px}.lvlist li{display:grid;grid-template-columns:36px 1fr;column-gap:8px;align-items:center;padding:6px 8px;border-radius:10px;opacity:.55}
+.lvlist li > span{font-size:24px;grid-row:span 2}.lvlist li small{color:var(--muted);font-size:12px}.lvlist li.done{opacity:.85}.lvlist li.cur{opacity:1;background:color-mix(in srgb,var(--c-design) 10%,var(--sheet));border:1px solid var(--c-design)}
+.rtlog{list-style:none;margin:0;padding:0;display:grid;gap:2px;max-height:300px;overflow:auto}.rtlog li{display:grid;grid-template-columns:80px 1fr auto;gap:8px;font-size:13px;padding:3px 0;border-bottom:1px dashed var(--line)}.rtlog small{color:var(--muted)}.rtlog b{color:#16A34A;font-variant-numeric:tabular-nums}.rtlog b.neg{color:var(--danger)}
+.rthow{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13.5px;line-height:1.5}
+.tgtools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.rklist{list-style:none;margin:0;padding:0;display:grid;gap:4px}.rklist li{display:grid;grid-template-columns:40px 1fr auto auto;gap:8px;align-items:center;background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.rklist li.me{border-color:var(--c-design);background:color-mix(in srgb,var(--c-design) 8%,var(--sheet))}.rklist li.gap{background:none;border:0;text-align:center;display:block;color:var(--muted)}
+.rk{font-weight:800;text-align:center;font-size:16px}.rkname{color:var(--ink)!important;text-decoration:none!important;font-size:14.5px;text-align:left}.rklist small{color:var(--muted);font-size:12px}.rklist b{font-variant-numeric:tabular-nums}
+.feed{display:grid;gap:10px;max-width:680px}.fpost{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.fph{display:flex;align-items:center;gap:8px}.fph .linkbtn{color:var(--ink);text-decoration:none}.fph small{color:var(--muted)}.fph .x{margin-left:auto;border:0;background:none;color:var(--muted);font-size:16px}
+.fpb{display:flex;gap:10px;align-items:flex-start;margin:6px 0}.fpb img{width:60px;max-height:90px;object-fit:cover;border-radius:6px}.fpb p{margin:0;font-size:14.5px;white-space:pre-wrap}.fpe{font-size:20px;margin-right:4px}
+.fpa{display:flex;gap:6px}.fpa .pchip.on{border-style:solid;border-color:var(--c-dev);color:var(--c-dev);font-weight:600}
+.fcmts{border-top:1px dashed var(--line);margin-top:8px;padding-top:6px;display:grid;gap:4px}.fcm{font-size:13.5px}.fcm small{color:var(--muted)}
+.classbld{display:flex;gap:16px;align-items:center;margin-bottom:10px}.cbe{font-size:64px}.classbld > div{display:grid}.classbld b{font-size:26px}.classbld small{color:var(--muted)}
+.tgbar{height:14px;border-radius:7px;background:var(--bg);overflow:hidden}.tgbar em{display:block;height:100%;background:linear-gradient(90deg,var(--c-design),var(--c-do),var(--c-dev))}
+.pbadges{font-size:22px;letter-spacing:3px;margin:0}
+
 @media print{
   body>*:not(#printRoot){display:none !important}
   body{background:#fff !important}
@@ -842,6 +891,7 @@ html,body{max-width:100%;overflow-x:hidden}
 <body>
 <header class="top">
   <div class="brand" id="brandBtn" role="button" tabindex="0" title="DDD Diary 소개"><span class="ddd"><i>D</i><i>D</i><i>D</i></span> Diary<small>Design · Do · Develop</small></div>
+  <button class="rtchip" id="rtChip" hidden aria-label="나의 루틴"></button>
   <nav class="tabs" id="tabs" hidden>
     <button data-view="day">하루</button>
     <button data-view="week">한 주</button>
@@ -849,6 +899,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <button data-view="year">1년</button>
         <button data-view="collect">모아보기</button>
     <button data-view="interest">관심사</button>
+    <button data-view="together">함께</button>
     <button data-view="photos">사진첩</button>
     <button data-view="settings">설정</button>
     <button data-view="class" hidden>우리 반</button>
@@ -925,7 +976,7 @@ let DB=null,BASE=null,PBASE=null,cloudReady=false,flushT=null;const dirty=new Se
 function loadLocal(){try{const r=localStorage.getItem(LS);if(r)S=normalize(JSON.parse(r))}catch(e){}try{const p=localStorage.getItem(LSP);if(p)PHOTOS=JSON.parse(p)||{}}catch(e){}}
 function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}}
 function savePhotosLocal(){if(DB)return;try{localStorage.setItem(LSP,JSON.stringify(PHOTOS))}catch(e){toast('이 브라우저 저장 공간이 가득 찼어요. 로그인하면 더 많이 저장할 수 있어요.')}}
-function touch(id){dirty.add(id);saveLocal();clearTimeout(flushT);flushT=setTimeout(flush,600);memberSyncSoon()}
+function touch(id){try{rtTouchHook()}catch(e){}dirty.add(id);saveLocal();clearTimeout(flushT);flushT=setTimeout(flush,600);memberSyncSoon()}
 async function flush(){
   if(!DB||!cloudReady)return;
   const ids=[...dirty];dirty.clear();ids.forEach(i=>inflight.add(i));
@@ -989,6 +1040,7 @@ async function boot(){
 }
 function enterLocal(){AUTH.state='ready';AUTH.local=true;try{localStorage.setItem(LSMODE,'1')}catch(e){}loadLocal();afterReady()}
 function afterReady(){
+  setTimeout(()=>{try{rtStart()}catch(e){console.warn(e)}},0);
   if(PENDING_AUTH){S.settings.auth=PENDING_AUTH;PENDING_AUTH=null;touch('settings')}
   if(PENDING_CATS){if(!Object.keys(S.weeks).length)S.settings.cats=PENDING_CATS;PENDING_CATS=null;touch('settings')}
   if(!S.settings.snapV){S.settings.snap=10;S.settings.snapV=1;touch('settings')}
@@ -1215,20 +1267,20 @@ const photoSrc=p=>p.img||p.thumb;
 const main=$('#main');let charts=[];let memberUnsub=null;
 function render(){
   charts.forEach(c=>c.destroy());charts=[];
-  killMaps();
+  killMaps();if(togetherUnsubs.length&&UI.view!=='together')stopTogether();
   if(memberUnsub&&UI.view!=='admin'){memberUnsub();memberUnsub=null}
   if(demoUnsub&&UI.view!=='admin'){demoUnsub();demoUnsub=null}
   if(classUnsubs.length&&UI.view!=='class'){classUnsubs.forEach(f=>f());classUnsubs=[]}
   if(apprUnsub&&UI.view!=='admin'&&UI.view!=='class'){apprUnsub();apprUnsub=null}
   clearInterval(tickerT);
-  $('#printBtn').hidden=AUTH.state!=='ready'||appBlocked();updateAuthBtn();
+  $('#printBtn').hidden=AUTH.state!=='ready'||appBlocked();updateAuthBtn();try{rtChip()}catch(e){}
   if(AUTH.state!=='ready'){$('#tabs').hidden=true;renderTracker();return renderGate()}
   if(!AUTH.local&&MEMBER){if(isLocked()){$('#tabs').hidden=true;renderTracker();return renderLock()}if(!isApproved()&&!isSuspended()){$('#tabs').hidden=true;renderTracker();return renderPending()}}
   if(isSuspended()){$('#tabs').hidden=true;main.innerHTML=`<div class="gate sheet"><h1>이용이 <b>정지</b>된 계정이에요</h1><p>관리자에게 문의해 주세요. 기록은 지워지지 않고 그대로 남아 있어요.</p></div>`;return}
   $('#tabs').hidden=false;
   document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-current',b.dataset.view===UI.view?'page':'false'));
   if(UI.view==='day')renderDay();else if(UI.view==='week')renderWeek();else if(UI.view==='month')renderMonth();else if(UI.view==='year')renderYear();else if(UI.view==='stats'){UI.view='collect';renderCollect()}
-  else if(UI.view==='photos')renderPhotos();else if(UI.view==='collect')renderCollect();else if(UI.view==='about')renderAbout();else if(UI.view==='interest')renderInterest();else if(UI.view==='class'&&AUTH.isManager)renderClass();else if(UI.view==='admin'&&AUTH.isOwner)renderAdmin();else{UI.view='settings';renderSettings()}
+  else if(UI.view==='photos')renderPhotos();else if(UI.view==='collect')renderCollect();else if(UI.view==='about')renderAbout();else if(UI.view==='interest')renderInterest();else if(UI.view==='together')renderTogether();else if(UI.view==='class'&&AUTH.isManager)renderClass();else if(UI.view==='admin'&&AUTH.isOwner)renderAdmin();else{UI.view='settings';renderSettings()}
 }
 $('#brandBtn').onclick=()=>{if(AUTH.state==='ready'&&!appBlocked()){UI.view='about';render();window.scrollTo(0,0)}};$('#brandBtn').onkeydown=e=>{if(e.key==='Enter')$('#brandBtn').click()};
 $('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;UI.view=b.dataset.view;render();window.scrollTo(0,0)});
@@ -1362,7 +1414,7 @@ function openModal(html){
   return m.querySelector('.mbox');
 }
 let onModalClose=null;
-function closeModal(){const m=$('#modal');m.hidden=true;m.innerHTML='';if(onModalClose){const f=onModalClose;onModalClose=null;f()}}
+function closeModal(){setTimeout(()=>{try{showCele()}catch(e){}},400);const m=$('#modal');m.hidden=true;m.innerHTML='';if(onModalClose){const f=onModalClose;onModalClose=null;f()}}
 
 /* ---------- todos ---------- */
 function todoList(list,docId,small,noTime,ph,emptyMsg){
@@ -1377,7 +1429,7 @@ function bindTodos(root,getList,docId,after){
     li.querySelector('.x').onclick=()=>{const l=getList();const i=l.findIndex(x=>x.id===id);if(i>=0){l.splice(i,1);touch(docId);after()}};
   });
   const row=root.querySelector('.addrow');const txt=row.querySelector('input[type=text]');const tm=row.querySelector('.ttime');
-  const add=()=>{const v=txt.value.trim();if(!v)return;getList(true).push({id:uid(),text:v,done:false,time:tm?tm.value:''});touch(docId);after(true)};
+  const add=()=>{const v=txt.value.trim();if(!v)return;try{rtDawnHook()}catch(e){}getList(true).push({id:uid(),text:v,done:false,time:tm?tm.value:''});touch(docId);after(true)};
   txt.onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing){e.preventDefault();add()}};
   row.querySelector('.add').onclick=add;
 }
@@ -1398,7 +1450,7 @@ function renderDay(){
   </section>
   <div class="daylayout">
     <section class="sheet plan stage-design"><h2><span class="stg">Design</span>하루를 설계하다</h2><p class="hint">오늘 무엇을, 언제, 어떻게 할 것인가? 실천했으면 체크하세요.</p><div id="ydNote"></div><div id="planBox"></div></section>
-    <section class="sheet see seebox stage-dev"><h2><span class="stg">Develop</span>돌아보고 성장하다</h2><p class="hint">오늘 무엇을 배웠고, 내일은 무엇을 개선할 것인가?</p><div id="devCmp"></div>
+    <section class="sheet see seebox stage-dev"><h2><span class="stg">Develop</span>돌아보고 성장하다</h2><p class="hint">오늘 무엇을 배웠고, 내일은 무엇을 개선할 것인가?</p><div id="rtRing"></div><div id="devCmp"></div>
     ${DEVF.map(([key,ic,l,ph])=>`<label class="dvf"><span>${ic} ${l}</span><textarea data-dv="${key}" rows="2" placeholder="${ph}">${esc(((peekDay(k)||{}).dev||{})[key]||'')}</textarea></label>`).join('')}
     <label class="dvf"><span>✍️ 자유 회고</span><textarea id="seeText" aria-label="자유 회고" placeholder="감사한 일, 오늘의 기분, 남기고 싶은 이야기">${esc((peekDay(k)||{}).see||'')}</textarea></label><div id="dayPhotos"></div><div id="dayIx"></div></section>
     <section class="sheet do stage-do">
@@ -1740,7 +1792,7 @@ function setMe(body){
   if($('#meNickSave'))$('#meNickSave').onclick=async()=>{const n=$('#meNick').value.trim();if(!n)return;try{await DB.doc('members/'+AUTH.id).update({nickname:n});MEMBER.nickname=n;toast('닉네임을 바꿨어요');renderSettings()}catch(e){toast('닉네임을 바꾸지 못했어요')}};
   if($('#meOut'))$('#meOut').onclick=doLogout;
   if($('#meDel'))$('#meDel').onclick=withdraw;
-  meAuth(body);meOrg(body);
+  meAuth(body);meOrg(body);rtSettings(body);
   if($('#meLogin'))$('#meLogin').onclick=()=>{try{localStorage.removeItem(LSMODE)}catch(e){}location.reload()};
 }
 function setCats(body){
@@ -1931,12 +1983,13 @@ function drawClass(){
     if(w){n++;sumMin+=w.tot;if(w.todos){sumRate+=w.done/w.todos;rateN++}if(w.match!=null){sumMatch+=w.match;matchN++}}
     return `<tr><td><b>${esc(m.nickname||'–')}</b></td><td>${esc([m.school,m.cls].filter(Boolean).join(' '))}</td><td>${fmtDate(m.lastActive)}</td>
       ${ok?`<td class="num">${w?dur(w.tot):'–'}</td><td class="num">${w&&w.todos?`${w.done}/${w.todos} (${Math.round(w.done/w.todos*100)}%)`:'–'}</td><td class="num">${w&&w.goals.length?`${w.goals.filter(g=>g.d).length}/${w.goals.length}`:'–'}</td><td class="num">${w&&w.match!=null?w.match+'%':'–'}</td>`:`<td colspan="4" class="muted">${m.share&&m.share.ok?'아직 보낸 요약이 없어요':'요약 공유를 허락하지 않았어요'}</td>`}
-      <td><button class="ghost" data-st="${m.id}">자세히</button></td></tr>`}).join('');
+      <td style="white-space:nowrap"><button class="ghost" data-stamp="${m.id}" title="칭찬 도장 (+0.3걸음)">⭐ 칭찬</button> <button class="ghost" data-st="${m.id}">자세히</button></td></tr>`}).join('');
   const pend=list.filter(m=>memberStatus(m)==='wait'||memberStatus(m)==='rej');
   el.innerHTML=`${pend.length?`<section class="sheet" style="margin-bottom:14px"><h2>가입 승인<small>${pend.filter(m=>memberStatus(m)==='wait').length}명 대기</small></h2><div class="tablewrap"><table class="mem"><thead><tr><th>이름</th><th>아이디</th><th>소속/반</th><th>신청일</th><th>승인</th></tr></thead><tbody>${pend.map(m=>`<tr><td><b>${esc(m.nickname||'')}</b></td><td>${esc(m.loginId||'')}</td><td>${esc([m.school,m.cls].filter(Boolean).join(' '))}</td><td>${fmtDate(m.joinedAt)}</td><td>${apprCell(m)}</td></tr>`).join('')}</tbody></table></div></section>`:''}<div class="kpis"><div class="kpi"><span>학생 수</span><b>${list.length}명</b><span>이번 주 기록한 학생 ${n}명</span></div><div class="kpi"><span>이번 주 하루 계획 실행률</span><b>${rateN?Math.round(sumRate/rateN*100)+'%':'–'}</b><span>학생 평균</span></div><div class="kpi"><span>이번 주 기록 시간</span><b>${n?dur(sumMin/n):'–'}</b><span>학생 평균</span></div><div class="kpi"><span>계획·실행 일치도</span><b>${matchN?Math.round(sumMatch/matchN)+'%':'–'}</b><span>주간 계획 세운 학생 평균</span></div></div>
    <section class="sheet">${list.length?`<div class="tablewrap"><table class="mem"><thead><tr><th>이름</th><th>소속/반</th><th>최근 접속</th><th class="num">이번 주 기록</th><th class="num">하루 계획 실행</th><th class="num">주간 목표</th><th class="num">일치도</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`:'<div class="empty">아직 담당 학생이 없어요. 학생이 가입할 때 담당 선생님으로 고르거나, 관리자가 지정하면 여기에 나타나요.</div>'}
    <p class="hint" style="margin-top:10px">학생이 허락한 요약만 보여요. 학생의 하루 기록 원본과 사진은 볼 수 없어요.</p></section>`;
   el.querySelectorAll('[data-st]').forEach(b=>b.onclick=()=>openStudent(CLASS.members.find(m=>m.id===b.dataset.st)));
+  el.querySelectorAll('[data-stamp]').forEach(b=>b.onclick=async()=>{const m=CLASS.members.find(x=>x.id===b.dataset.stamp);if(!m||!confirm(`${m.nickname||'학생'}에게 칭찬 도장을 찍을까요? 학생 루틴에 0.3걸음이 더해져요.`))return;await sendInbox(m.id,'stamp',{name:(managerOf(AUTH.id)||{}).name||''});toast('칭찬 도장을 찍었어요 ⭐')});
   bindApprovals(el);
 }
 async function openStudent(m){
@@ -1986,6 +2039,7 @@ function renderAdmin(){
     <section class="sheet"><h2>중간 관리자<small>${mgrs.length}명</small></h2>
       <p class="hint">중간 관리자는 담당 학생이 허락한 기록 요약을 "우리 반" 메뉴에서 보고, 주마다 한마디를 남길 수 있어요. 회원 관리 표에서 "중간 관리자로" 버튼으로 지정할 수 있어요.</p>
       <div id="mgrList"></div></section>
+    ${rtAdminHTML()}
     ${demoAdminHTML()}
     ${sheetAdminHTML()}
     ${noticeAdminHTML()}
@@ -1997,7 +2051,7 @@ function renderAdmin(){
   $('#ivAdd').onclick=async()=>{const name=$('#ivName').value.trim();if(!name){$('#ivName').focus();return}
     const code=newCode();const inv=Object.assign({},ADMIN.invites||{});inv[code]={name,school:$('#ivSchool').value.trim(),cls:$('#ivCls').value.trim(),role:$('#ivRole').value,managerId:$('#ivRole').value==='manager'?'':$('#ivMgr').value,createdAt:Date.now()};
     if(await saveAdminCfg({invites:inv})){toast(`초대 코드 ${code}를 만들었어요`);['ivName'].forEach(i=>$('#'+i).value='');drawInvites()}};
-  bindNoticeAdmin();bindDemoAdmin();
+  bindNoticeAdmin();bindDemoAdmin();bindRtAdmin();
   $('#shSync').onclick=()=>syncSheet(true);$('#shAuto').onchange=e=>{S.settings.sheetAuto=e.target.checked;touch('settings');if(e.target.checked)scheduleSheetSync()};
   watchApprovals(()=>drawMembers());
   $('#adCats').onclick=async()=>{if(await saveAdminCfg({defaultCats:clone(S.settings.cats)})){toast('신규 회원 기본 카테고리를 지정했어요');renderAdmin()}};
@@ -2105,7 +2159,7 @@ function openWeekPlan(mon){
       if(step===3)b.querySelectorAll('input[data-k]').forEach(inp=>{const v=inp.value.trim();if(v)draft.days[inp.dataset.k].push({id:uid(),text:v,done:false,time:''})});
       if(step<3){step++;draw();return}
       if(draft.prevReview!==(pw.review||'')){week(pwk).review=draft.prevReview;touch(pwk)}
-      const W=week(wk);W.theme=draft.theme.trim();W.goals=draft.goals;W.targets=draft.targets;W.planAt=Date.now();
+      const W=week(wk);W.theme=draft.theme.trim();W.goals=draft.goals;W.targets=draft.targets;W.planAt=Date.now();if(W.theme)rtFeed('th'+wk.slice(1),'theme',`이번 주 다짐: ${W.theme}`,'🎯');
       for(const [k,list] of Object.entries(draft.days)){if(list.length||peekDay(k))day(k).todos=list}
       touch(wk);closeModal();render();toast('주간 계획을 저장했어요');
     };
@@ -2808,6 +2862,7 @@ const LOGO='<span class="ddd"><i>D</i><i>D</i><i>D</i></span> Diary';
 const DEVF=[['good','🏆','잘한 점 · 성취','오늘 해낸 일, 칭찬하고 싶은 점'],['bad','🤔','아쉬운 점 · 계획과 달랐던 이유','계획대로 안 된 일과 그 이유'],['learn','💡','오늘 배운 점','새로 알게 된 것, 깨달은 것'],['next','🌱','내일의 다짐 · 개선점','내일 하루에 반영할 한 가지']];
 function devText(d){if(!d)return '';const v=d.dev||{};const parts=DEVF.filter(([k])=>(v[k]||'').trim()).map(([k,,l])=>`[${l.split(' · ')[0]}] ${v[k].trim()}`);if(String(d.see||'').trim())parts.push(d.see.trim());return parts.join('\n')}
 function drawDevCmp(){
+  try{drawRing()}catch(e){}
   const el=$('#devCmp');if(!el)return;const k=dkey(UI.date);const d=peekDay(k)||{todos:[],entries:[]};
   const td=d.todos||[],n=td.filter(t=>t.done).length;let mins=0;(d.entries||[]).forEach(e=>mins+=e.e-e.s);
   const mon=monday(UI.date),w=S.weeks['w'+dkey(mon)]||{};const pc=planCompare(w.targets||{},weekStats(mon).by);
@@ -3210,6 +3265,7 @@ function openItem(iid,id,preset){
     <div class="trow"><label class="field" style="flex:1"><span>${T.dateL}</span><input type="date" id="itDate"></label><label class="field" style="flex:1"><span>${cur.type==='travel'?'돌아온 날':'끝낸 날 (선택)'}</span><input type="date" id="itDate2"></label></div>
     <div class="field"><span>내 별점 <b id="itRateV"></b></span><div class="rate5" id="itRate" tabindex="0" role="slider" aria-label="내 별점" aria-valuemin="0" aria-valuemax="5"><span class="stars big"><span id="itRateFill">★★★★★</span>★★★★★</span></div></div>
     <label class="field"><span>한 줄 평</span><input id="itOne" maxlength="80" placeholder="한 문장으로 남겨 보세요"></label>
+    ${S.settings.pubFeed&&!AUTH.demo&&!ADMIN.feedOff?'<label class="agree" style="margin:-4px 0 6px"><input type="checkbox" class="chk" id="itShare"> <span>한 줄 평을 "함께 → 소식"에 공유하기</span></label>':''}
     <section class="logbox"><div class="loghead"><b>📝 ${T.logL}</b><small>${T.logHint}</small></div>
       <div class="logadd"><div class="trow"><input type="date" id="lgDate" aria-label="날짜">${cur.type==='book'?'<input type="number" id="lgPage" min="0" placeholder="쪽" aria-label="읽은 쪽" style="width:90px">':cur.type==='screen'?'<input id="lgPage" placeholder="회차 (예: S1 E3)" aria-label="회차" style="width:140px">':''}</div>
         <textarea id="lgText" rows="2" placeholder="${cur.type==='book'?'오늘 읽고 느낀 점':cur.type==='screen'?'오늘 본 감상':cur.type==='travel'?'오늘 있었던 일':'이어서 남길 내용'}"></textarea>
@@ -3261,7 +3317,7 @@ function openItem(iid,id,preset){
     f.title=$('#itTitle').value.trim();f.sub=$('#itSub').value.trim();f.date=$('#itDate').value;f.date2=$('#itDate2').value;f.oneLine=$('#itOne').value.trim();f.review=$('#itRev').value;f.tags=$('#itTags').value.split(',').map(x=>x.trim()).filter(Boolean);
     if(isMap&&!f.region)f.region=itemRegion(f);
     if(!f.title&&f.places&&f.places[0])f.title=f.places[0].name;if(!f.title){$('#itTitle').focus();toast('제목을 적어 주세요');return}
-    $('#itSave').disabled=true;const ok=await putItem(f);$('#itSave').disabled=false;if(ok){closeModal();toast('저장했어요')}};
+    $('#itSave').disabled=true;const ok=await putItem(f);$('#itSave').disabled=false;if(ok){if($('#itShare')&&$('#itShare').checked&&(f.oneLine||f.rating))rtFeed('rv'+f.id,'review',`${f.title}${f.rating?' ★'+f.rating:''}${f.oneLine?' — '+f.oneLine:''}`,cur.icon||'',{cover:(f.ext&&f.ext.cover)||''});closeModal();toast('저장했어요')}};
 }
 function openIxManage(){
   const list=ixList();
@@ -3376,6 +3432,272 @@ function gdSettingsHTML(){
     :`<p class="hint">관리자가 firebase-config.js에 Google 연결 설정(clientId)을 넣으면, 사진을 내 Google Drive와 Google 포토에 바로 저장할 수 있어요. 지금은 사진이 다이어리 안에 저장돼요.</p>`}</section>`}
 function bindGdSettings(){const g=$('#gdGo');if(g)g.onclick=async()=>{await gdConnectAndFlush();renderSettings()};const f=$('#gdFlush');if(f)f.onclick=async()=>{await gdConnectAndFlush();renderSettings()};
   const p=$('#gpOn');if(p)p.onchange=e=>{S.settings.gpOn=e.target.checked;touch('settings');GD.token=null}}
+
+/* ---------- 루틴 · 걸음 (점수, 단계, 배지, 함께) ---------- */
+const RT_LEVELS=[[0,'✏️','스케치','아직 머릿속 구상'],[15,'📐','설계도','첫 선을 긋다'],[25,'🚜','터 다지기','땅을 고르다'],[35,'🧱','주춧돌','기초를 놓다'],[45,'🏗️','골조','뼈대가 서다'],[55,'🔨','지붕 올리기','비바람을 막다'],[65,'🪟','창과 문','빛이 들어오다'],[75,'🏠','완공','내 집이 되다'],[85,'🏢','증축','더 높이 올리다'],[95,'🗼','랜드마크','모두가 알아보는 건물']];
+const rtLevel=s=>{let i=0;RT_LEVELS.forEach((l,j)=>{if(s>=l[0])i=j});return i};
+const rtMult=s=>s<30?1:s<50?.7:s<70?.45:s<85?.28:s<95?.15:.07;
+const r2=x=>Math.round(x*100)/100;
+const fmtS=x=>(Math.floor((+x||0)*10)/10).toFixed(1);
+const TIERS={fun:[.2,'🎈','재미'],b:[.3,'🥉','동'],s:[.8,'🥈','은'],g:[2,'🥇','금'],l:[3,'💎','전설']};
+const DAYKEYS=[['design','Design','할 일 3개 이상'],['doA','Do','할 일 절반 이상 완료'],['doB','시간','시간표 6시간 이상'],['dev','Develop','회고 칸 2개 이상'],['loop','선순환','어제의 다짐 실천']];
+const BADGES=[
+ ['first_design','📝','첫 설계','처음으로 Design에 할 일 적기','b','습관',X=>X.designDays>=1],
+ ['first_loop','🔁','첫 고리','하루 안에 Design·Do·Develop 모두 완료','b','습관',X=>X.fullDays>=1],
+ ['design7','📅','일주일 설계사','7일 연속 Design','b','습관',X=>X.designStreak>=7],
+ ['design30','🧭','한 달 설계사','30일 연속 Design','s','습관',X=>X.designStreak>=30],
+ ['loop10','🔗','다짐 지킴이','어제의 다짐을 오늘 실천 10번','s','습관',X=>X.loops>=10],
+ ['weekly8','🗓️','주간 개근','주간 계획과 회고 8주 연속','s','습관',X=>X.weeklyStreak>=8],
+ ['precise','🎯','정밀 설계사','시간 계획 일치도 80% 이상 4주 연속','g','습관',X=>X.matchStreak>=4],
+ ['streak100','🏁','100일의 기적','100일 연속 기록','l','습관',X=>X.recordStreak>=100],
+ ['year300','📆','1년 개근','한 해에 300일 이상 기록','l','습관',X=>X.maxYearDays>=300],
+ ['timer1','⏱️','타이머 첫걸음','처음으로 타이머 기록','b','실천',X=>X.timer>=1],
+ ['routine3','🔂','루틴 메이커','반복 일과 3개 이상 등록','b','실천',X=>X.routines>=3],
+ ['focus2h','🧘','몰입의 시간','타이머 한 번에 2시간 이상','s','실천',X=>X.longTimer>=1],
+ ['marker','🖍️','형광펜 장인','한 달 동안 시간표 하루 평균 12시간 이상','s','실천',X=>X.marker],
+ ['done500','✅','할 일 해결사','할 일 누적 500개 완료','g','실천',X=>X.done>=500],
+ ['first_dev','💭','첫 회고','처음으로 Develop 작성','b','회고',X=>X.devDays>=1],
+ ['thanks50','🙏','감사 부자','감사한 일을 쓴 날 50일','s','회고',X=>X.thanks>=50],
+ ['dev30','✍️','회고 장인','30일 연속 Develop','s','회고',X=>X.devStreak>=30],
+ ['learn100','💡','배움 수집가','"오늘 배운 점" 누적 100개','g','회고',X=>X.learn>=100],
+ ['chars100k','📖','자서전 작가','회고 글 누적 10만 자','l','회고',X=>X.devChars>=100000],
+ ['book1','📕','첫 장을 넘긴 사람','첫 완독','b','독서',X=>X.booksDone>=1],
+ ['booknote10','🔍','깊이 읽는 사람','한 책에 독서 노트 10번','s','독서',X=>X.maxBookLogs>=10],
+ ['book10','🐛','책벌레','10권 완독','s','독서',X=>X.booksDone>=10],
+ ['quote50','🖋️','문장 수집가','좋은 글귀 50개','g','독서',X=>X.quotes>=50],
+ ['book50','📚','서재 주인','50권 완독','g','독서',X=>X.booksDone>=50],
+ ['reread','🔄','되새김질','같은 책 다시 읽기','fun','독서',X=>X.reread],
+ ['screen1','🎬','첫 관람','첫 감상 기록','b','영화',X=>X.screens>=1],
+ ['screen5m','🎞️','주말 극장장','한 달에 5편','s','영화',X=>X.screenMonthMax>=5],
+ ['series','🍿','정주행러','드라마 시리즈 완주','s','영화',X=>X.seriesDone>=1],
+ ['nightbinge','🌙','밤샘 정주행','자정 넘어 감상 노트 3일 연속','fun','영화',X=>X.nightBinge],
+ ['trip1','🧳','첫 여행','첫 여행 기록','b','여행',X=>X.trips>=1],
+ ['abroad1','🛂','여권 도장','첫 해외여행','s','여행',X=>X.abroad>=1],
+ ['tripnote7','✒️','길 위의 작가','여행 일지 7일','s','여행',X=>X.maxTripLogs>=7],
+ ['domestic8','🗺️','팔도 유람','국내 여행 8곳','g','여행',X=>X.domestic>=8],
+ ['world5','🌏','세계 여행자','해외 5개국 방문','l','여행',X=>X.countries>=5],
+ ['ex1','👟','첫걸음','첫 운동 기록','b','운동',X=>X.ex>=1],
+ ['run5k','🏃','첫 5K','달리기 한 번에 5km','b','운동',X=>X.run5k],
+ ['ex20m','💪','꾸준왕','한 달에 운동 20회','s','운동',X=>X.exMonthMax>=20],
+ ['hike3','⛰️','정상 정복','등산 3회','s','운동',X=>X.hikes>=3],
+ ['swim10k','🐬','물개','수영 누적 10km','s','운동',X=>X.swimM>=10000],
+ ['bike100','🚴','두 바퀴 여행자','자전거 누적 100km','s','운동',X=>X.bikeKm>=100],
+ ['mount10','🏔️','명산 수집가','서로 다른 산 10곳','g','운동',X=>X.mountains>=10],
+ ['sleepy','😴','잠만보','수면 10시간 이상인 날 3번','fun','재미',X=>X.sleepy>=3,1],
+ ['owl','🦉','올빼미','자정 넘어 기록한 날 10번','fun','재미',X=>X.owl>=10,1],
+ ['dawn','🌅','새벽 설계자','새벽 5시 전에 Design 5번','fun','재미',X=>X.dawn>=5,1],
+ ['restful','🛋️','쉼표 장인','휴식이 30% 넘는 날 3일 연속','fun','재미',X=>X.restful,1],
+ ['foodie','🍜','먹방 요정','식사 시간 하루 3시간 이상 3번','fun','재미',X=>X.foodie>=3,1],
+ ['rain','🌧️','우중 러너','메모에 "비"가 들어간 운동 3번','fun','재미',X=>X.rain>=3,1],
+ ['zombie','🧟','부활','14일 쉬다가 돌아와 7일 연속 기록','fun','재미',X=>X.zombie,1],
+ ['bday','🎂','생일도 성장 중','생일에 기록','fun','재미',X=>X.bday,1],
+ ['ontime','🕰️','칼같은 사람','할 일 시간과 실제 시작이 10분 이내로 10번','fun','재미',X=>X.ontime>=10,1],
+ ['eager','🤹','의욕 부자','하루 할 일 15개 이상 적기','fun','재미',X=>X.eager,1],
+ ['cheer1','📣','첫 응원','처음으로 응원 보내기','b','함께',X=>X.given>=1],
+ ['cheer100','🤝','응원 요정','응원 100번 보내기','s','함께',X=>X.given>=100],
+ ['popular','🌟','인기 다짐','주간 다짐에 응원 20개 받기','fun','함께',X=>X.themeCheers>=20],
+ ['stamp10','🧑‍🏫','선생님의 칭찬','선생님 칭찬 도장 10개','g','함께',X=>X.stamps>=10]
+].map(([id,e,n,c,t,cat,test,hidden])=>({id,e,n,c,t,cat,test,hidden:!!hidden}));
+const badgeOf=id=>BADGES.find(b=>b.id===id);
+const RT=()=>S.settings.rt;
+const rtOn=()=>AUTH.state==='ready'&&!AUTH.local&&!appBlocked();
+let RT_LOCK=false,rtT=null,rtCele=[],rtCeleOn=false,pubT=null,togetherUnsubs=[],PUBS={},FEED={},inboxUnsub=null;
+function rtInit(){if(S.settings.rt)return S.settings.rt;const y=dkey(addDays(new Date(),-1));
+  S.settings.rt={score:20,start:todayKey(),days:{},weeks:{},badges:{},streakAw:{},comeback:{},log:[],owl:[],dawn:[],give:{},recv:{},recvSeen:{},postCheers:{},given:0,stamps:0,miss:0,lastDecay:y,lastSummary:'w'+dkey(monday(new Date()))};
+  touch('settings');setTimeout(()=>toast('🎉 루틴 20.0걸음으로 시작해요! 매일 Design · Do · Develop 고리를 닫으면 걸음이 자라요.'),1200);return S.settings.rt}
+function rtGain(amount,reason,half,dayK){const rt=RT();const m=rtMult(rt.score);const g=r2(amount*(half?(1+m)/2:m));if(!g)return 0;rt.score=Math.max(0,Math.min(100,r2(rt.score+g)));rt.log.unshift({at:Date.now(),day:dayK||todayKey(),r:reason,g});rt.log=rt.log.slice(0,250);return g}
+function rtLose(amount,reason,dayK){const rt=RT();const b=rt.score;rt.score=Math.max(0,r2(rt.score-amount));const g=r2(rt.score-b);if(g)rt.log.unshift({at:Date.now(),day:dayK,r:reason,g});rt.log=rt.log.slice(0,250)}
+function devCount(d){const v=(d&&d.dev)||{};return ['good','bad','learn','next'].filter(k=>(v[k]||'').trim()).length+((d&&(d.see||'').trim())?1:0)}
+function dayFacts(k){const d=peekDay(k)||{todos:[],entries:[]};const td=d.todos||[];const done=td.filter(t=>t.done).length;let mins=0;(d.entries||[]).forEach(e=>mins+=e.e-e.s);const dc=devCount(d);
+  const prev=peekDay(dkey(addDays(fromKey(k),-1)));const nx=((prev&&prev.dev&&prev.dev.next)||'').trim().split('\n')[0].slice(0,80);
+  return {design:td.length>=3,doA:td.length>0&&done>=Math.ceil(td.length/2),doB:mins>=360,dev:dc>=2,loop:!!nx&&td.some(t=>t.done&&t.text===nx),any:td.length>0||mins>0||dc>0,todos:td.length,done,mins,dc}}
+const inVacation=k=>{const v=S.settings.vacation;return !!(v&&v.from&&v.to&&k>=v.from&&k<=v.to)};
+function rtStreakInfo(){const rt=RT();let k=todayKey();if(!dayFacts(k).any&&!inVacation(k))k=dkey(addDays(fromKey(k),-1));let n=0,startK=k;
+  for(let i=0;i<800;i++){const kk=dkey(addDays(fromKey(k),-i));if(kk<rt.start)break;const f=dayFacts(kk);if(f.any){n++;startK=kk}else if(inVacation(kk)){startK=kk}else break}
+  let gap=0;for(let i=1;i<60;i++){const kk=dkey(addDays(fromKey(startK),-i));if(dayFacts(kk).any)break;gap++}
+  return {n,startK,gapBefore:gap}}
+function computeX(){
+  const days=[];for(const w of Object.values(S.weeks))for(const [k,d] of Object.entries(w.days||{}))days.push([k,d]);days.sort((a,b)=>a[0]<b[0]?-1:1);
+  const X={designDays:0,fullDays:0,loops:0,timer:0,longTimer:0,done:0,devDays:0,thanks:0,learn:0,devChars:0,sleepy:0,foodie:0,ontime:0,eager:false,marker:false,restful:false,zombie:false,bday:false};
+  const catBy=n=>S.settings.cats.filter(c=>c.name.includes(n)).map(c=>c.id);const sleepC=catBy('수면'),restC=catBy('휴식'),foodC=catBy('식사');
+  const byMonth={},byYear={};let restRun=0;const bd=S.settings.birthday||'';const map={};
+  days.forEach(([k,d])=>{const f=dayFacts(k);map[k]=f;if((d.todos||[]).length)X.designDays++;if(f.todos&&f.done&&f.dc)X.fullDays++;if(f.loop)X.loops++;X.done+=f.done;if(f.todos>=15)X.eager=true;
+    if(f.dc){X.devDays++;const v=d.dev||{};if(/감사/.test((d.see||'')+(v.good||'')))X.thanks++;if((v.learn||'').trim())X.learn++;X.devChars+=((d.see||'')+(v.good||'')+(v.bad||'')+(v.learn||'')+(v.next||'')).length}
+    let sl=0,rs=0,fd=0;(d.entries||[]).forEach(e=>{const m=e.e-e.s;if(e.src==='tracker'){X.timer++;if(m>=120)X.longTimer++}if(sleepC.includes(e.cat))sl+=m;if(restC.includes(e.cat))rs+=m;if(foodC.includes(e.cat))fd+=m});
+    if(sl>=600)X.sleepy++;if(fd>=180)X.foodie++;if(f.mins>=240&&rs/f.mins>=.3){restRun++;if(restRun>=3)X.restful=true}else restRun=0;
+    (d.todos||[]).forEach(t=>{if(t.time){const tm=tmin(t.time);if((d.entries||[]).some(e=>Math.abs(e.s-tm)<=10))X.ontime++}});
+    const mk=k.slice(0,7),yk=k.slice(0,4);byMonth[mk]=(byMonth[mk]||0)+f.mins;if(f.any)byYear[yk]=(byYear[yk]||0)+1;if(bd&&k.slice(5)===bd&&f.any)X.bday=true});
+  X.maxYearDays=Math.max(0,...Object.values(byYear));
+  X.marker=Object.entries(byMonth).some(([mk,m])=>{const [y,mo]=mk.split('-').map(Number);const n=new Date(y,mo,0).getDate();return mk<todayKey().slice(0,7)&&m/n>=720});
+  const streakOf=fn=>{let best=0,cur=0,prev=null;days.forEach(([k])=>{if(fn(map[k],k)){cur=(prev&&dkey(addDays(fromKey(prev),1))===k)?cur+1:1;best=Math.max(best,cur);prev=k}else{cur=0;prev=null}});return best};
+  X.designStreak=streakOf(f=>f.todos>0);X.devStreak=streakOf(f=>f.dc>0);X.recordStreak=Math.max(streakOf(f=>f.any),rtStreakInfo().n);
+  let anyKeys=days.filter(([k])=>map[k].any).map(([k])=>k);for(let i=1;i<anyKeys.length;i++){const gap=Math.round((fromKey(anyKeys[i])-fromKey(anyKeys[i-1]))/864e5)-1;if(gap>=14){let c=1;for(let j=i+1;j<anyKeys.length&&Math.round((fromKey(anyKeys[j])-fromKey(anyKeys[j-1]))/864e5)===1;j++)c++;if(c>=7)X.zombie=true}}
+  const wks=Object.keys(S.weeks).sort();let ws=0,wsBest=0,ms=0,msBest=0,prevW=null;wks.forEach(wk=>{const w=S.weeks[wk];const cont=prevW&&dkey(addDays(fromKey(prevW.slice(1)),7))===wk.slice(1);
+    if(w.planAt&&(w.review||'').trim().length>=10){ws=cont?ws+1:1;wsBest=Math.max(wsBest,ws)}else ws=0;
+    const mon=fromKey(wk.slice(1));const pc=planCompare(w.targets||{},weekStats(mon).by);if(pc.match!=null&&pc.match>=80&&addDays(mon,6)<fromKey(todayKey())){ms=cont?ms+1:1;msBest=Math.max(msBest,ms)}else ms=0;prevW=wk});
+  X.weeklyStreak=wsBest;X.matchStreak=msBest;X.routines=(S.settings.routines||[]).length;
+  const its=Object.values(ITEMS);const typeOf=it=>(ixList().find(x=>x.id===it.iid)||{}).type;
+  const books=its.filter(it=>typeOf(it)==='book');X.booksDone=books.filter(b=>b.status==='done').length;X.maxBookLogs=Math.max(0,...books.map(b=>(b.logs||[]).length));X.quotes=books.reduce((a,b)=>a+(b.logs||[]).filter(l=>(l.quote||'').trim()).length,0);
+  const tl={};books.forEach(b=>{const t=(b.title||'').trim();tl[t]=(tl[t]||0)+1});X.reread=books.some(b=>(b.tags||[]).includes('재독'))||Object.entries(tl).some(([t,n])=>t&&n>=2);
+  const scr=its.filter(it=>typeOf(it)==='screen');X.screens=scr.length;const sm={};scr.forEach(s=>{const m=String(s.date||'').slice(0,7);if(m)sm[m]=(sm[m]||0)+1});X.screenMonthMax=Math.max(0,...Object.values(sm));
+  X.seriesDone=scr.filter(s=>s.status==='done'&&s.ext&&s.ext.mediaType==='tv').length;
+  const nightDays=[...new Set(scr.flatMap(s=>(s.logs||[]).filter(l=>l.at&&new Date(l.at).getHours()<4).map(l=>dkey(new Date(l.at)))))].sort();X.nightBinge=nightDays.some((k,i)=>i>=2&&dkey(addDays(fromKey(nightDays[i-2]),2))===k&&dkey(addDays(fromKey(nightDays[i-1]),1))===k);
+  const trips=its.filter(it=>typeOf(it)==='travel');X.trips=trips.length;X.abroad=trips.filter(t=>itemRegion(t)==='abroad').length;X.domestic=trips.filter(t=>itemRegion(t)==='domestic').length;X.maxTripLogs=Math.max(0,...trips.map(t=>(t.logs||[]).length));
+  X.countries=new Set(trips.flatMap(t=>(t.places||[]).map(p=>p.cc).filter(c=>c&&c!=='kr'))).size;
+  const ex=its.filter(it=>typeOf(it)==='exercise');X.ex=ex.length;X.run5k=ex.some(e=>e.sport==='run'&&+e.dist>=5);const em={};ex.forEach(e=>{const m=String(e.date||'').slice(0,7);if(m)em[m]=(em[m]||0)+1});X.exMonthMax=Math.max(0,...Object.values(em));
+  X.hikes=ex.filter(e=>e.sport==='hike').length;X.swimM=ex.filter(e=>e.sport==='swim').reduce((a,e)=>a+(+e.dist||0),0);X.bikeKm=ex.filter(e=>e.sport==='bike').reduce((a,e)=>a+(+e.dist||0),0);
+  X.mountains=new Set(ex.filter(e=>e.sport==='hike'&&(e.place||'').trim()).map(e=>e.place.trim())).size;X.rain=ex.filter(e=>/비/.test(e.review||'')).length;
+  const rt=RT();X.owl=(rt.owl||[]).length;X.dawn=(rt.dawn||[]).length;X.given=rt.given||0;X.stamps=rt.stamps||0;X.themeCheers=Math.max(0,...Object.entries(rt.postCheers||{}).filter(([p])=>p.startsWith('th')).map(([,n])=>n));
+  return X;
+}
+function rtTouchHook(){if(RT_LOCK||!rtOn()||!RT())return;const h=new Date().getHours(),k=todayKey(),rt=RT();
+  if(h<4&&!(rt.owl||[]).includes(k)){rt.owl=[...(rt.owl||[]),k].slice(-40)}
+  clearTimeout(rtT);rtT=setTimeout(rtProcess,1500)}
+function rtDawnHook(){const rt=RT();if(!rt)return;const h=new Date().getHours(),k=todayKey();if(h>=3&&h<5&&!(rt.dawn||[]).includes(k))rt.dawn=[...(rt.dawn||[]),k].slice(-40)}
+function rtProcess(){
+  if(!rtOn())return;rtInit();const rt=RT();RT_LOCK=true;const before=rt.score,beforeLv=rtLevel(rt.score),snap=JSON.stringify(rt),c0=rtCele.length;
+  try{
+    const today=todayKey(),yday=dkey(addDays(new Date(),-1));
+    for(let k=dkey(addDays(fromKey(rt.lastDecay),1));k<=yday;k=dkey(addDays(fromKey(k),1))){
+      if(inVacation(k)||dayFacts(k).any)rt.miss=0;else{rt.miss=(rt.miss||0)+1;if(rt.miss>3)rtLose(.2,'🚧 공사 중단 (3일 넘게 기록 없음)',k)}rt.lastDecay=k}
+    for(const k of [yday,today]){if(k<rt.start)continue;const f=dayFacts(k);rt.days[k]=rt.days[k]||{};
+      DAYKEYS.forEach(([key,lab])=>{if(f[key]&&!rt.days[k][key]){rt.days[k][key]=1;rtGain(.1,`${lab} 고리`,false,k)}})}
+    Object.keys(rt.days).forEach(k=>{if(k<dkey(addDays(new Date(),-4)))delete rt.days[k]});
+    const curMon=monday(new Date());
+    for(const mon of [addDays(curMon,-7),curMon]){const wk='w'+dkey(mon);if(dkey(addDays(mon,6))<rt.start)continue;const w=S.weeks[wk]||{};const aw=rt.weeks[wk]=rt.weeks[wk]||{};const done=mon<curMon;
+      let n=0;for(let i=0;i<7;i++)if(dayFacts(dkey(addDays(mon,i))).any)n++;
+      const pc=planCompare(w.targets||{},weekStats(mon).by);
+      [['plan',!!w.planAt,'주간 계획 세우기'],['review',(w.review||'').trim().length>=10,'주간 회고 쓰기'],['match',done&&pc.match!=null&&pc.match>=80,'일치도 80% 이상'],['five',n>=5,'한 주 5일 이상 기록']].forEach(([key,ok,lab])=>{if(ok&&!aw[key]){aw[key]=1;rtGain(.2,lab,false)}})}
+    Object.keys(rt.weeks).forEach(wk=>{if(wk<'w'+dkey(addDays(curMon,-21)))delete rt.weeks[wk]});
+    const si=rtStreakInfo();rt.streak=si.n;rt.bestStreak=Math.max(rt.bestStreak||0,si.n);
+    [[7,.3],[30,1],[100,2]].forEach(([th,pt])=>{const key=si.startK+':'+th;if(si.n>=th&&!rt.streakAw[key]){rt.streakAw[key]=1;rtGain(pt,`🔥 ${th}일 연속 기록`,true)}});
+    if(si.gapBefore>=7&&si.n>=3&&!rt.comeback[si.startK]&&si.startK>=rt.start){rt.comeback[si.startK]=1;rtGain(.3,'🔄 다시 시작 보너스',true)}
+    const X=computeX();const nb=[];BADGES.forEach(b=>{if(!rt.badges[b.id]&&b.test(X)){rt.badges[b.id]={at:Date.now()};const g=rtGain(TIERS[b.t][0],`${b.e} 배지: ${b.n}`,true);nb.push({type:'badge',b,g});rtFeed('bd'+b.id,'badge',`${b.e} '${b.n}' 배지를 받았어요`,b.e)}});
+    if(nb.length>3)rtCele.push({type:'many',list:nb});else rtCele.push(...nb);
+    const thisWk='w'+dkey(curMon);if(rt.lastSummary!==thisWk){const prevMon=addDays(curMon,-7);if(dkey(addDays(prevMon,6))>=rt.start)rtCele.push({type:'week',mon:prevMon});rt.lastSummary=thisWk}
+    const afterLv=rtLevel(rt.score);if(afterLv>beforeLv)rtCele.unshift({type:'level',lv:afterLv});
+  }finally{RT_LOCK=false}
+  if(JSON.stringify(rt)!==snap)touch('settings');else saveLocal();
+  rtChip();showCele();pubSoon();if(UI.view==='day')drawRing();
+}
+function weekGain(mon){const a=dkey(mon),b=dkey(addDays(mon,6));return r2(RT().log.filter(l=>l.day>=a&&l.day<=b).reduce((s,l)=>s+l.g,0))}
+function rtChip(){const c=$('#rtChip');if(!c)return;const rt=RT();if(!rtOn()||!rt||appBlocked()){c.hidden=true;return}const i=rtLevel(rt.score),L=RT_LEVELS[i],nx=RT_LEVELS[i+1];
+  const pct=nx?Math.max(3,(rt.score-L[0])/(nx[0]-L[0])*100):100;const idle=(rt.miss||0)>3;
+  c.hidden=false;c.innerHTML=`<span class="rte">${L[1]}${idle?'🚧':''}</span><span class="rtt"><b>${fmtS(rt.score)}</b><small>걸음</small></span><i class="rtbar"><em style="width:${pct}%"></em></i>`;c.title=`루틴 ${fmtS(rt.score)}걸음 · ${L[2]}`;c.onclick=openRtPanel}
+function drawRing(){const el=$('#rtRing');if(!el)return;const rt=RT();if(!rtOn()||!rt){el.innerHTML='';return}const k=dkey(UI.date);const f=dayFacts(k);const isLive=k>=dkey(addDays(new Date(),-1))&&k>=rt.start;
+  const got=r2(rt.log.filter(l=>l.day===k&&l.g>0&&/고리$/.test(l.r)).reduce((s,l)=>s+l.g,0));
+  el.innerHTML=`<div class="ring"><div class="ringh"><b>오늘의 고리</b><small>${isLive?`고리 +${fmtS(got)} / 0.5걸음`:'지난 날은 걸음이 바뀌지 않아요'}</small></div><div class="ringc">${DAYKEYS.map(([key,lab,hint])=>`<span class="${f[key]?'on':''}" title="${hint}">${f[key]?'✓':'○'} ${lab}</span>`).join('')}</div></div>`}
+function showCele(){if(rtCeleOn||!rtCele.length||!$('#modal').hidden)return;const c=rtCele.shift();rtCeleOn=true;const rt=RT();
+  let html='';if(c.type==='badge')html=`<div class="cele-e">${c.b.e}</div><div class="cele-t">${c.b.hidden?'숨은 배지 발견!':'배지 획득!'}</div><b>${esc(c.b.n)}</b><p>${esc(c.b.c)}</p><span class="cele-p">${TIERS[c.b.t][1]} ${TIERS[c.b.t][2]} · +${fmtS(c.g)}걸음</span>`;
+  else if(c.type==='many'){const g=r2(c.list.reduce((a,x)=>a+x.g,0));html=`<div class="cele-e">🎁</div><div class="cele-t">배지 ${c.list.length}개를 한꺼번에 받았어요!</div><p class="cele-many">${c.list.map(x=>`<span title="${esc(x.b.n)}">${x.b.e}</span>`).join('')}</p><span class="cele-p">+${fmtS(g)}걸음 · 루틴 패널에서 모두 볼 수 있어요</span>`}
+  else if(c.type==='level'){const L=RT_LEVELS[c.lv];html=`<div class="cele-e">${L[1]}</div><div class="cele-t">${c.lv+1}단계 달성!</div><b>${L[2]}</b><p>${L[3]}</p><span class="cele-p">루틴 ${fmtS(rt.score)}걸음</span>`}
+  else{const mon=c.mon,a=dkey(mon),b=dkey(addDays(mon,6));const g=weekGain(mon);const bs=Object.entries(rt.badges).filter(([,v])=>{const k=dkey(new Date(v.at));return k>=a&&k<=b}).map(([id])=>badgeOf(id)).filter(Boolean);let loops=0;for(let i=0;i<7;i++){const f=dayFacts(dkey(addDays(mon,i)));if(f.todos&&f.done&&f.dc)loops++}
+    html=`<div class="cele-e">📊</div><div class="cele-t">지난주 결산</div><b>${mon.getMonth()+1}.${mon.getDate()} – ${addDays(mon,6).getMonth()+1}.${addDays(mon,6).getDate()}</b><div class="cele-week"><span>걸음<b>${g>=0?'+':''}${fmtS(g)}</b></span><span>고리를 닫은 날<b>${loops}일</b></span><span>연속 기록<b>${rt.streak||0}일</b></span></div>${bs.length?`<p>받은 배지 ${bs.map(b=>b.e).join(' ')}</p>`:''}<span class="cele-p">이번 주도 한 걸음씩!</span>`}
+  let o=$('#rtCele');if(!o){o=document.createElement('div');o.id='rtCele';document.body.appendChild(o)}
+  o.innerHTML=`<div class="cele-box" role="dialog" aria-live="polite">${html}<button class="primary" id="celeOk">좋아요</button></div>${c.type!=='week'?'<div class="confetti">'+Array.from({length:24},(_,i)=>`<i style="left:${(i*37)%100}%;animation-delay:${(i%8)*.08}s;background:${['#2F6BFF','#16A34A','#8B3FE0','#FFE14D','#FF7EB0'][i%5]}"></i>`).join('')+'</div>':''}`;o.hidden=false;
+  const close=()=>{o.hidden=true;o.innerHTML='';rtCeleOn=false;setTimeout(showCele,300)};$('#celeOk').onclick=close;o.onclick=e=>{if(e.target===o)close()};setTimeout(()=>{if(!o.hidden&&c.type!=='week')close()},6000)}
+function openRtPanel(){const rt=RT();if(!rt)return;const i=rtLevel(rt.score),L=RT_LEVELS[i],nx=RT_LEVELS[i+1];const X=computeX();const own=Object.keys(rt.badges).length;
+  const k=todayKey();const f=dayFacts(k);const got=r2(rt.log.filter(l=>l.day===k&&l.g>0&&/고리$/.test(l.r)).reduce((s,l)=>s+l.g,0));
+  const near=BADGES.filter(b=>!rt.badges[b.id]&&!b.hidden).slice(0,3);
+  const box=openModal(`<div class="rtp"><div class="rtph"><span class="rtpe">${L[1]}</span><div><small>루틴</small><b>${fmtS(rt.score)}<small>걸음</small></b><span>${i+1}단계 · ${L[2]} — ${L[3]}</span>${nx?`<i class="rtbar big"><em style="width:${Math.max(3,(rt.score-L[0])/(nx[0]-L[0])*100)}%"></em></i><small>다음 단계 ${nx[1]} ${nx[2]}까지 ${fmtS(nx[0]-rt.score)}걸음</small>`:'<small>최고 단계예요!</small>'}</div></div>
+    <div class="rtstats"><span>오늘의 고리<b>+${fmtS(got)}</b><small>하루 최대 0.5</small></span><span>연속 기록<b>${rt.streak||0}일</b><small>최고 ${rt.bestStreak||0}일</small></span><span>이번 주<b>${weekGain(monday(new Date()))>=0?'+':''}${fmtS(weekGain(monday(new Date())))}</b><small>걸음</small></span><span>배지<b>${own}</b><small>/ ${BADGES.length}</small></span></div>
+    <div class="ringc" style="margin:8px 0">${DAYKEYS.map(([key,lab,hint])=>`<span class="${f[key]?'on':''}">${f[key]?'✓':'○'} ${lab}<small>${hint}</small></span>`).join('')}</div>
+    <div class="subnav" id="rtTabs" style="margin:10px 0 8px"><button data-rt="b" aria-pressed="true">배지</button><button data-rt="s">건축 단계</button><button data-rt="l">걸음 기록</button><button data-rt="h">걸음 얻는 법</button></div><div id="rtBody"></div></div>
+    <div class="mfoot"><span class="sp"></span><button class="primary" data-x>닫기</button></div>`);box.classList.add('wide');
+  const tabs={b:()=>{const cats=[...new Set(BADGES.map(b=>b.cat))];return cats.map(c=>`<h4 class="rtcat">${c}</h4><div class="bgrid">${BADGES.filter(b=>b.cat===c).map(b=>{const o=rt.badges[b.id];const hide=b.hidden&&!o;return `<div class="bdg${o?' on':''}" title="${esc(hide?'숨은 배지':b.c)}"><span>${hide?'❔':b.e}</span><b>${hide?'???':esc(b.n)}</b><small>${hide?'숨은 배지':esc(b.c)}</small><em>${TIERS[b.t][1]} +${TIERS[b.t][0]}</em></div>`}).join('')}</div>`).join('')},
+    s:()=>`<ol class="lvlist">${RT_LEVELS.map((l,j)=>`<li class="${j===i?'cur':j<i?'done':''}"><span>${l[1]}</span><b>${j+1}. ${l[2]}</b><small>${l[0].toFixed(1)}걸음~ · ${l[3]}</small></li>`).join('')}</ol>`,
+    l:()=>rt.log.length?`<ul class="rtlog">${rt.log.slice(0,60).map(l=>`<li><small>${kShort(l.day)}</small><span>${esc(l.r)}</span><b class="${l.g<0?'neg':''}">${l.g>0?'+':''}${l.g.toFixed(2)}</b></li>`).join('')}</ul>`:'<p class="hint">아직 기록이 없어요.</p>',
+    h:()=>`<ul class="rthow"><li><b>매일</b> Design(할 일 3개+), Do(절반 이상 완료), 시간(시간표 6시간+), Develop(회고 2칸+), 선순환(어제의 다짐 실천) 각 0.1걸음 · 하루 최대 0.5</li><li><b>매주</b> 주간 계획, 주간 회고, 일치도 80%+, 5일 이상 기록 각 0.2</li><li><b>연속 기록</b> 7일 +0.3 · 30일 +1.0 · 100일 +2.0, 쉬었다 다시 3일 연속 +0.3</li><li><b>배지</b> 🎈0.2 🥉0.3 🥈0.8 🥇2.0 💎3.0</li><li><b>함께</b> 응원 받기 +0.02, 댓글 받기 +0.05(주 최대 0.5), 응원 보내기 +0.01(주 최대 0.2), 선생님 칭찬 도장 +0.3</li><li><b>그날이나 다음 날까지</b> 쓴 기록만 걸음이 돼요. 걸음이 높을수록 같은 노력에 조금씩 덜 올라요.</li><li><b>공사 중단</b> 3일 넘게 기록이 없으면 하루 0.2걸음씩 줄어요. 방학·출장은 마이페이지의 <b>휴식 모드</b>를 켜면 줄지 않아요.</li></ul>`};
+  const draw=t=>{box.querySelectorAll('#rtTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.rt===t));$('#rtBody').innerHTML=tabs[t]()};box.querySelectorAll('#rtTabs button').forEach(b=>b.onclick=()=>draw(b.dataset.rt));draw('b')}
+
+/* --- public profile, feed, inbox --- */
+function pubSoon(){clearTimeout(pubT);pubT=setTimeout(pubSync,4000)}
+async function pubSync(){const rt=RT();if(!DB||!MEMBER||AUTH.demo||AUTH.local||!rt)return;const mon=monday(new Date());let loops=0;for(let i=0;i<7;i++){const f=dayFacts(dkey(addDays(mon,i)));if(f.todos&&f.done&&f.dc)loops++}
+  const tierRank={l:5,g:4,s:3,b:2,fun:1};const top=Object.keys(rt.badges).map(badgeOf).filter(Boolean).sort((a,b)=>tierRank[b.t]-tierRank[a.t]).slice(0,3).map(b=>b.id);
+  const doc={nickname:MEMBER.nickname||'',school:MEMBER.school||'',cls:MEMBER.cls||'',managerId:MEMBER.managerId||'',score:rt.score,level:rtLevel(rt.score),badgeN:Object.keys(rt.badges).length,badges:Object.keys(rt.badges),top,weekKey:'w'+dkey(mon),weekGain:weekGain(mon),weekLoops:loops,streak:rt.streak||0,showRank:!!S.settings.pubRank,showFeed:!!S.settings.pubFeed,updatedAt:Date.now()};
+  try{await DB.doc('pub/'+AUTH.id).set(doc)}catch(e){}}
+async function rtFeed(id,type,text,emoji,extra){if(!DB||!MEMBER||AUTH.demo||!S.settings.pubFeed||ADMIN.feedOff)return;if(type==='badge'&&S.settings.pubBadge===false)return;
+  try{await DB.doc('feed/'+AUTH.id.slice(0,8)+'_'+id).set(clone(Object.assign({uid:AUTH.id,nickname:MEMBER.nickname||'',cls:MEMBER.cls||'',managerId:MEMBER.managerId||'',type,text,emoji:emoji||'',at:Date.now(),cheers:{}},extra||{})))}catch(e){}}
+function startInbox(){if(inboxUnsub||!DB||!MEMBER||AUTH.demo)return;inboxUnsub=DB.collection('pub/'+AUTH.id+'/inbox').onSnapshot(async s=>{const rt=RT();if(!rt)return;let ch=false;const wk='w'+dkey(monday(new Date()));
+  for(const d of s.docs){if(!d.exists)continue;const ev=d.data()||{};const day=dkey(new Date(ev.at||Date.now()));const key=(ev.from||'')+':'+day+':'+ev.type;
+    if(ev.type==='stamp'){rt.stamps=(rt.stamps||0)+1;rtGain(.3,`⭐ 선생님 칭찬 도장${ev.name?' ('+ev.name+')':''}`,true);rtCele.push({type:'badge',b:{e:'⭐',n:'칭찬 도장을 받았어요',c:ev.name?`${ev.name} 선생님이 칭찬해 주셨어요`:'선생님이 칭찬해 주셨어요',t:'b',hidden:false},g:.3});ch=true}
+    else{if(ev.post){rt.postCheers=rt.postCheers||{};if(ev.type==='cheer')rt.postCheers[ev.post]=(rt.postCheers[ev.post]||0)+1}
+      const used=(rt.recv&&rt.recv[wk])||0;if(!rt.recvSeen[key]&&used<.5){const amt=ev.type==='comment'?.05:.02;const g=rtGain(Math.min(amt,.5-used),ev.type==='comment'?`💬 ${ev.name||'친구'}님의 댓글`:`👏 ${ev.name||'친구'}님의 응원`,false);rt.recv={[wk]:used+amt};rt.recvSeen[key]=1;ch=true}}
+    try{await DB.doc('pub/'+AUTH.id+'/inbox/'+d.id).delete()}catch(e){}}
+  const keep={};Object.keys(rt.recvSeen||{}).forEach(k=>{if(k.split(':')[1]>=dkey(addDays(new Date(),-8)))keep[k]=1});rt.recvSeen=keep;
+  if(ch){touch('settings');rtChip();showCele();pubSoon()}},()=>{})}
+function rtGive(amt,reason){const rt=RT();if(!rt)return;const wk='w'+dkey(monday(new Date()));const used=(rt.give&&rt.give[wk])||0;if(used>=.2)return;rtGain(Math.min(amt,.2-used),reason,false);rt.give={[wk]:used+amt};touch('settings');rtChip()}
+async function sendInbox(to,type,extra){if(!DB||!to||to===AUTH.id)return;try{await DB.doc(`pub/${to}/inbox/${type[0]}${uid()}`).set(clone(Object.assign({from:AUTH.id,type,name:(MEMBER&&MEMBER.nickname)||'',at:Date.now()},extra||{})))}catch(e){}}
+
+/* --- 함께 view --- */
+UI.tg='rank';UI.tgRank='week';UI.tgScope='all';
+function stopTogether(){togetherUnsubs.forEach(f=>{try{f()}catch(e){}});togetherUnsubs=[]}
+function renderTogether(){
+  main.innerHTML=`${noticeHTML()}<section class="dayhead"><div class="dtitle">함께<small>서로의 성장을 응원해요. 계획·시간표·회고 내용은 보이지 않아요.</small></div></section>
+    <div class="subnav" id="tgTabs"><button data-tg="rank">🏆 랭킹</button><button data-tg="feed">📣 소식</button><button data-tg="class">🏗️ 우리 반 건물</button></div><div id="tgBody"><div class="empty">불러오는 중…</div></div>`;
+  bindNotice();main.querySelectorAll('[data-tg]').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.tg===UI.tg);b.onclick=()=>{UI.tg=b.dataset.tg;renderTogether()}});
+  if(!DB){$('#tgBody').innerHTML='<div class="sheet empty">로그인해야 볼 수 있어요.</div>';return}
+  if(!togetherUnsubs.length){togetherUnsubs.push(DB.collection('pub').onSnapshot(s=>{PUBS={};for(const d of s.docs)if(d.exists)PUBS[d.id]=clone(d.data()||{});if(UI.view==='together'&&$('#modal').hidden)drawTogether()},()=>{}));
+    togetherUnsubs.push(DB.collection('feed').onSnapshot(s=>{FEED={};for(const d of s.docs)if(d.exists)FEED[d.id]=clone(d.data()||{});if(UI.view==='together'&&UI.tg==='feed'&&$('#modal').hidden)drawTogether()},()=>{}))}
+  drawTogether();
+}
+const lvE=s=>RT_LEVELS[rtLevel(+s||0)][1];
+function myPub(){return PUBS[AUTH.id]||{}}
+function drawTogether(){const el=$('#tgBody');if(!el)return;const wk='w'+dkey(monday(new Date()));const me=myPub();
+  const priv=!S.settings.pubRank||!S.settings.pubFeed?`<div class="notice"><span>내 이름과 소식은 ${!S.settings.pubRank?'랭킹':''}${!S.settings.pubRank&&!S.settings.pubFeed?'·':''}${!S.settings.pubFeed?'소식':''}에 아직 공개되지 않았어요. 마이페이지의 "루틴 · 함께하기"에서 켤 수 있어요.</span><button class="primary" id="tgSet">설정하기</button></div>`:'';
+  if(UI.tg==='rank'){if(ADMIN.rankOff){el.innerHTML='<div class="sheet empty">관리자가 랭킹을 꺼 두었어요.</div>';return}
+    let list=Object.entries(PUBS).map(([id,p])=>({id,...p})).filter(p=>p.showRank||p.id===AUTH.id);
+    if(UI.tgScope==='class'&&me.managerId)list=list.filter(p=>p.managerId===me.managerId);
+    const val=p=>UI.tgRank==='week'?(p.weekKey===wk?p.weekLoops||0:0):UI.tgRank==='grow'?(p.weekKey===wk?p.weekGain||0:0):(p.score||0);
+    list.sort((a,b)=>val(b)-val(a)||(b.score||0)-(a.score||0));const myIdx=list.findIndex(p=>p.id===AUTH.id);
+    const row=(p,i)=>`<li class="${p.id===AUTH.id?'me':''}"><span class="rk">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><button class="linkbtn rkname" data-prof="${p.id}">${lvE(p.score)} ${esc(p.showRank||p.id!==AUTH.id?p.nickname:p.nickname+' (나만 보임)')}</button><small>${esc([p.cls].filter(Boolean).join(''))}</small><b>${UI.tgRank==='week'?`${val(p)}일`:UI.tgRank==='grow'?`${val(p)>=0?'+':''}${fmtS(val(p))}걸음`:`${fmtS(val(p))}걸음`}</b></li>`;
+    el.innerHTML=`${priv}<div class="tgtools"><div class="seg3">${[['week','이번 주 꾸준함'],['grow','성장'],['score','루틴']].map(([v,l])=>`<button data-rk="${v}" aria-pressed="${UI.tgRank===v}">${l}</button>`).join('')}</div>${me.managerId?`<div class="seg3">${[['all','전체'],['class','우리 반']].map(([v,l])=>`<button data-sc="${v}" aria-pressed="${UI.tgScope===v}">${l}</button>`).join('')}</div>`:''}</div>
+      <p class="hint">${UI.tgRank==='week'?'이번 주에 Design·Do·Develop 고리를 모두 닫은 날 수예요. 매주 월요일에 새로 시작해요.':UI.tgRank==='grow'?'이번 주에 늘어난 걸음이에요.':'지금의 루틴 걸음이에요.'} 상위 10명과 내 순위만 보여요.</p>
+      <ol class="rklist">${list.slice(0,10).map(row).join('')}${myIdx>=10?`<li class="gap">…</li>${row(list[myIdx],myIdx)}`:''}</ol>${list.length?'':'<div class="empty">아직 랭킹에 공개한 사람이 없어요.</div>'}`;
+    el.querySelectorAll('[data-rk]').forEach(b=>b.onclick=()=>{UI.tgRank=b.dataset.rk;drawTogether()});el.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{UI.tgScope=b.dataset.sc;drawTogether()})}
+  else if(UI.tg==='feed'){if(ADMIN.feedOff){el.innerHTML='<div class="sheet empty">관리자가 소식을 꺼 두었어요.</div>';return}
+    const posts=Object.entries(FEED).map(([id,p])=>({id,...p})).sort((a,b)=>(b.at||0)-(a.at||0)).slice(0,60);
+    el.innerHTML=`${priv}${posts.length?`<div class="feed">${posts.map(p=>{const n=Object.values(p.cheers||{}).filter(Boolean).length;const mine=p.cheers&&p.cheers[AUTH.id];const pp=PUBS[p.uid]||{};
+      return `<article class="fpost"><div class="fph"><button class="linkbtn" data-prof="${p.uid}">${lvE(pp.score)} <b>${esc(p.nickname||'')}</b></button><small>${fmtDate(p.at)}</small>${p.uid===AUTH.id||AUTH.isOwner?`<button class="x" data-fdel="${p.id}" aria-label="지우기">×</button>`:''}</div>
+        <div class="fpb">${p.cover?`<img src="${esc(p.cover)}" alt="" referrerpolicy="no-referrer">`:''}<p>${p.emoji?`<span class="fpe">${esc(p.emoji)}</span>`:''}${esc(p.text||'')}</p></div>
+        <div class="fpa"><button class="pchip${mine?' on':''}" data-cheer="${p.id}" ${AUTH.demo||p.uid===AUTH.id?'disabled':''}>👏 응원 ${n||''}</button><button class="pchip" data-cmt="${p.id}">💬 댓글</button></div><div class="fcmts" id="cm_${p.id}" hidden></div></article>`}).join('')}</div>`:'<div class="sheet empty">아직 소식이 없어요. 마이페이지에서 소식 공유를 켜면 배지 소식과 주간 다짐이 여기에 올라와요.</div>'}`;
+    el.querySelectorAll('[data-cheer]').forEach(b=>b.onclick=async()=>{const p=FEED[b.dataset.cheer];if(!p)return;const on=!(p.cheers&&p.cheers[AUTH.id]);p.cheers=Object.assign({},p.cheers,{[AUTH.id]:on});drawTogether();
+      try{await DB.doc('feed/'+b.dataset.cheer).update({['cheers.'+AUTH.id]:on})}catch(e){toast('응원하지 못했어요')}
+      if(on){const rt=RT();rt.given=(rt.given||0)+1;rtGive(.01,'👏 응원 보내기');sendInbox(p.uid,'cheer',{post:b.dataset.cheer.split('_').slice(1).join('_')});rtTouchHook()}});
+    el.querySelectorAll('[data-cmt]').forEach(b=>b.onclick=()=>openComments(b.dataset.cmt));
+    el.querySelectorAll('[data-fdel]').forEach(b=>b.onclick=async()=>{if(!confirm('이 소식을 지울까요?'))return;try{await DB.doc('feed/'+b.dataset.fdel).delete()}catch(e){toast('지우지 못했어요')}})}
+  else{const cls=Object.entries(PUBS).map(([id,p])=>({id,...p})).filter(p=>me.managerId?p.managerId===me.managerId:(me.cls&&p.cls===me.cls&&p.school===me.school));
+    if(!cls.length){el.innerHTML='<div class="sheet empty">담당 선생님이 정해지면 우리 반 건물을 함께 지을 수 있어요.</div>';return}
+    const avg=cls.reduce((s,p)=>s+(p.score||0),0)/cls.length;const L=RT_LEVELS[rtLevel(avg)];const loops=cls.reduce((s,p)=>s+(p.weekKey===wk?p.weekLoops||0:0),0);const goal=cls.length*4;
+    el.innerHTML=`<section class="sheet classbld"><div class="cbe">${L[1]}</div><div><small>우리 반 평균 루틴</small><b>${fmtS(avg)}걸음</b><span>${L[2]} — ${L[3]}</span></div></section>
+      <section class="sheet"><h3>이번 주 우리 반 공동 목표</h3><p class="hint">반 친구 모두가 고리를 닫은 날을 합쳐요. 한 사람당 4일이 목표예요.</p><div class="tgbar"><em style="width:${Math.min(100,loops/goal*100)}%"></em></div><p><b>${loops}</b> / ${goal}일 ${loops>=goal?'🎉 목표 달성!':''}</p></section>
+      <p class="hint">함께하는 사람 ${cls.length}명. 개인 순위 대신 모두의 걸음으로 건물을 지어요.</p>`}
+  el.querySelectorAll('[data-prof]').forEach(b=>b.onclick=()=>openProfile(b.dataset.prof));const s=$('#tgSet');if(s)s.onclick=()=>{UI.view='settings';UI.setTab='me';render()}}
+async function openComments(id){const box=$('#cm_'+id);if(!box)return;box.hidden=!box.hidden;if(box.hidden)return;box.innerHTML='<p class="hint">불러오는 중…</p>';let list=[];
+  try{const q=await DB.collection('feed/'+id+'/comments').get();list=q.docs.filter(d=>d.exists).map(d=>({cid:d.id,...d.data()})).sort((a,b)=>(a.at||0)-(b.at||0))}catch(e){}
+  box.innerHTML=`${list.map(c=>`<div class="fcm"><b>${esc(c.nickname||'')}</b> ${esc(c.text||'')} <small>${fmtDate(c.at)}</small></div>`).join('')||'<p class="hint">첫 댓글을 남겨 보세요.</p>'}${AUTH.demo?'':`<div class="addrow" style="margin-top:6px"><input id="ci_${id}" maxlength="200" placeholder="따뜻한 한마디"><button class="ghost" data-csend="${id}">남기기</button></div>`}`;
+  const send=box.querySelector('[data-csend]');if(send)send.onclick=async()=>{const t=$('#ci_'+id).value.trim();if(!t)return;const p=FEED[id];try{await DB.doc(`feed/${id}/comments/c${uid()}`).set({uid:AUTH.id,nickname:(MEMBER&&MEMBER.nickname)||'',text:t,at:Date.now()});if(p&&p.uid!==AUTH.id){rtGive(.02,'💬 댓글 남기기');sendInbox(p.uid,'comment',{post:id})}box.hidden=true;openComments(id)}catch(e){toast('댓글을 남기지 못했어요')}}}
+function openProfile(id){const p=PUBS[id];if(!p){toast('공개된 정보가 없어요');return}const L=RT_LEVELS[rtLevel(p.score)];const posts=Object.values(FEED).filter(f=>f.uid===id&&f.type==='review').slice(0,6);
+  openModal(`<div class="rtp"><div class="rtph"><span class="rtpe">${L[1]}</span><div><small>${esc([p.school,p.cls].filter(Boolean).join(' '))}</small><b>${esc(p.nickname||'')}</b><span>루틴 ${fmtS(p.score)}걸음 · ${L[2]} · 연속 ${p.streak||0}일</span></div></div>
+    <h4 class="rtcat">대표 배지</h4><div class="bgrid">${(p.top||[]).map(badgeOf).filter(Boolean).map(b=>`<div class="bdg on"><span>${b.e}</span><b>${esc(b.n)}</b><em>${TIERS[b.t][1]}</em></div>`).join('')||'<p class="hint">아직 없어요.</p>'}</div>
+    <h4 class="rtcat">받은 배지 ${p.badgeN||0}개</h4><p class="pbadges">${(p.badges||[]).map(badgeOf).filter(Boolean).map(b=>`<span title="${esc(b.n)}">${b.e}</span>`).join(' ')}</p>
+    ${posts.length?`<h4 class="rtcat">공개한 리뷰</h4>${posts.map(f=>`<p class="hint">${esc(f.emoji||'')} ${esc(f.text)}</p>`).join('')}`:''}</div><div class="mfoot"><span class="sp"></span><button class="primary" data-x>닫기</button></div>`)}
+function rtSettings(body){if(AUTH.local||!MEMBER)return;const v=S.settings.vacation||{};
+  body.insertAdjacentHTML('beforeend',`<section class="sheet" style="margin-top:14px"><h2>루틴 · 함께하기</h2>
+    <label class="agree"><input type="checkbox" class="chk" id="psRank" ${S.settings.pubRank?'checked':''}> <span>랭킹에 내 이름과 루틴 걸음 보여 주기</span></label>
+    <label class="agree"><input type="checkbox" class="chk" id="psFeed" ${S.settings.pubFeed?'checked':''}> <span>"함께 → 소식"에 공유하기 (배지 소식, 주간 다짐, 내가 고른 관심사 한 줄 평)</span></label>
+    <label class="agree" style="margin-left:26px"><input type="checkbox" class="chk" id="psBadge" ${S.settings.pubBadge!==false?'checked':''}> <span>배지를 받으면 자동으로 소식에 올리기</span></label>
+    <p class="hint">계획, 시간표, 회고 내용은 어떤 경우에도 다른 사람에게 보이지 않아요.</p>
+    <div class="field"><span>휴식 모드 <small>방학, 출장, 아플 때 켜 두면 걸음이 줄지 않고 연속 기록도 끊기지 않아요</small></span><div class="trow"><input type="date" id="vcFrom" value="${esc(v.from||'')}"><span>–</span><input type="date" id="vcTo" value="${esc(v.to||'')}"><button class="ghost" id="vcClr">끄기</button></div></div>
+    <label class="field"><span>생일 (선택, 숨은 배지용)</span><input type="date" id="bdDate" value="${S.settings.birthday?'2000-'+S.settings.birthday:''}"></label>
+    <div class="btnrow"><button class="primary" id="psSave">저장</button></div></section>`);
+  $('#vcClr').onclick=()=>{$('#vcFrom').value='';$('#vcTo').value=''};
+  $('#psSave').onclick=()=>{S.settings.pubRank=$('#psRank').checked;S.settings.pubFeed=$('#psFeed').checked;S.settings.pubBadge=$('#psBadge').checked;const f=$('#vcFrom').value,t=$('#vcTo').value;S.settings.vacation=f&&t?{from:f<t?f:t,to:f<t?t:f}:null;const b=$('#bdDate').value;S.settings.birthday=b?b.slice(5):'';touch('settings');pubSync();toast('저장했어요')}}
+function rtAdminHTML(){return `<section class="sheet"><h2>루틴 · 함께하기</h2><p class="hint">학급 분위기에 맞게 랭킹과 소식을 켜고 끌 수 있어요. 개인 루틴 걸음과 배지는 항상 동작해요.</p>
+  <label class="agree"><input type="checkbox" class="chk" id="adRank" ${ADMIN.rankOff?'':'checked'}> <span>랭킹 사용</span></label><label class="agree"><input type="checkbox" class="chk" id="adFeed" ${ADMIN.feedOff?'':'checked'}> <span>소식(응원·댓글) 사용</span></label></section>`}
+function bindRtAdmin(){const a=$('#adRank'),b=$('#adFeed');if(a)a.onchange=()=>saveAdminCfg({rankOff:!a.checked});if(b)b.onchange=()=>saveAdminCfg({feedOff:!b.checked})}
+function rtStart(){if(!rtOn())return;rtInit();setTimeout(rtProcess,1200);startInbox()}
+setInterval(()=>{if(rtOn()&&RT())rtProcess()},120000);
 
 /* ---------- toast ---------- */
 let toastT=null;
